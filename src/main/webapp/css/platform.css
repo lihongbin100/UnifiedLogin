@@ -1,0 +1,188 @@
+
+html * {
+    -webkit-font-smoothing: antialiased;
+    font-family: "Lantinghei SC", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
+}
+
+body {
+    background-color: #e7e8eb;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.header {
+    height: 80px;
+}
+
+.navbar {
+    border-top: 4px solid #337ab7;
+    padding-top: 15px;
+}
+
+td {
+    max-width: 150px;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.pro-desc {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: 20px;
+    cursor: pointer;
+}
+
+.content {
+    margin:10px 50px 50px 50px;
+    padding: 50px;
+    min-height: 600px;
+    background-color: #ffffff;
+}
+
+.page {
+    height: 40px;
+    padding-top: 15px;
+    padding-right: 20px;
+}
+
+.no-content {
+    color: red;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+}
+
+hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+img {
+    background-color: #F2F2F2;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+th {
+    text-align: center;
+}
+
+#footer {
+    text-align: center;
+    width: 100%;
+    height: 70px;
+    background-color: #ccc;
+    padding: 30px;
+}
+
+.div-user {
+    color: #337ab7;
+}
+
+.cou-bg {
+    height: 40px;
+}
+
+.tool {
+    cursor: pointer;
+}
+
+.loading {
+    height: 200px;
+    width: 200px;
+    text-align: center;
+    padding-top: 50px;
+}
+
+.tab-content {
+    margin-top: 10px;
+}
+
+.quJson {
+    display: none;
+}
+
+.center {
+    text-align: center;
+}
+
+.form-li {
+    display: inline-block;
+}
+
+.tip {
+    z-index: 9999;
+    position: absolute;
+    top: 0px;
+    width: auto;
+    min-width: 200px;
+    height: 50px;
+    right: 0px;
+}
+
+h6 {
+    color: #808080;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.error_ex h1 {
+    font-size: 140px;
+    font-weight: bold;
+    padding: 50px 0;
+    color: #28B779;
+}
+
+.error-content {
+    height: 500px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.editor {
+    overflow: scroll;
+    max-height: 300px
+}
+
+input[type=file] {
+    cursor: pointer;
+    background-color: yellow;
+}
+
+.require-input {
+    color: red;
+}
+
+.shu{
+    border-right: 1px solid #e7e7eb;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.shu div{
+    text-align: center;
+    line-height: 34px;
+    width: 100%;
+    cursor: pointer;
+}
+.shu div:hover{
+    background-color: #e7e7eb;
+}
+.shu div.active{
+    background-color: #337ab7;
+    color: #ffffff;
+}

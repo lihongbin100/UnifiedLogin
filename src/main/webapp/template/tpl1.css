@@ -1,0 +1,89 @@
+.functions li {
+    display: inline-block;
+    width: 120px;
+    height: 50px;
+    border: solid #CCCCCC 1px;
+    margin: 10px;
+    padding-top: 15px;
+    padding-left: 15px;
+    color: #f2f2f2;
+    font-size: 16px;
+}
+
+.functions li > span {
+    margin-right: 5px;
+
+}
+
+.fun1 {
+    background-color: #d1ad5f;
+    opacity: 0.8;
+}
+
+.fun2 {
+    background-color: #6393aa;
+    opacity: 0.8;
+}
+
+.fun3 {
+    background-color: #82a262;
+    opacity: 0.8;
+}
+
+.fun4 {
+    background-color: #bc6249;
+    opacity: 0.8;
+}
+
+.fun5 {
+    background-color: #63639b;
+    opacity: 0.8;
+}
+
+.fun6 {
+    background-color: #b477af;
+    opacity: 0.8;
+}
+
+.functions-div {
+    position: absolute;
+    bottom: 40px;
+}
+
+body {
+    background-color: #CCCCCC;
+}
+
+.bottom > span {
+    color: #f2f2f2;
+}
+
+.bottom > span.active {
+    color: yellow;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+
+}
+
+.ad {
+    position: absolute;
+    bottom: 0px;
+}
+
+.ad > img {
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+}
+
+.ad > img:nth-child(2) {
+    margin-left: 100%;
+}
+
+.ad > img:nth-child(3) {
+    margin-left: 100%;
+}

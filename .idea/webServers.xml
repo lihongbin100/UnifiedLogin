@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f5481e3d-1bf3-4b13-9150-60d5ee91a599" name="10.8.122.123" url="http://10.8.122.123">
+        <fileTransfer host="10.8.122.123" port="22" rootFolder="/opt/apache-tomcat-8.0.20/webapps/Unifiedlogin" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

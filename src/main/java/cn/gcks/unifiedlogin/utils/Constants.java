@@ -33,6 +33,8 @@ public class Constants {
         public static String PORTAL = "PORTAL";
         public static String FILE = "FILE";
         public static String AVATOR = "AVATOR";
+        public static String TASK = "TASK";
     }
+
 
 }

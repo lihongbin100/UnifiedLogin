@@ -1,6 +1,11 @@
 package cn.gcks.unifiedlogin.controller;
 
+import cn.gcks.unifiedlogin.dingding.api.DDConfigApi;
+import cn.gcks.unifiedlogin.dingding.model.DDUser;
+import cn.gcks.unifiedlogin.dingding.model.JsApiConfig;
+import cn.gcks.unifiedlogin.dingding.utils.SignMethod;
 import cn.gcks.unifiedlogin.entity.TAgentInfo;
+import cn.gcks.unifiedlogin.entity.TUser;
 import cn.gcks.unifiedlogin.entity.TUserAndAgent;
 import cn.gcks.unifiedlogin.entity.TUserAndMenu;
 import cn.gcks.unifiedlogin.model.LoginUser;
@@ -8,6 +13,8 @@ import cn.gcks.unifiedlogin.model.Result;
 import cn.gcks.unifiedlogin.repository.AgentInfoRepository;
 import cn.gcks.unifiedlogin.repository.UserAndAgentRepository;
 import cn.gcks.unifiedlogin.repository.UserAndMenuRepository;
+import cn.gcks.unifiedlogin.repository.UserRepository;
+import cn.gcks.unifiedlogin.service.DDAPI;
 import cn.gcks.unifiedlogin.service.LoginCodeService;
 import cn.gcks.unifiedlogin.service.QyAPI;
 import com.foxinmy.weixin4j.exception.WeixinException;
@@ -17,6 +24,7 @@ import com.foxinmy.weixin4j.qy.model.User;
 import com.foxinmy.weixin4j.tuple.News;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +34,9 @@ import org.springframework.web.socket.TextMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -38,7 +49,11 @@ public class AuthController {
     @Autowired
     private QyAPI qyAPI;
     @Autowired
+    private DDAPI ddapi;
+    @Autowired
     private LoginCodeService loginCodeService;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserAndAgentRepository userAndAgentRepository;
     @Autowired
@@ -47,6 +62,15 @@ public class AuthController {
     private LoginWebSocketHandler loginWebSocketHandler;
     @Autowired
     private UserAndMenuRepository userAndMenuRepository;
+
+    @Value("${wx.auth_redirect_url}")
+    String wxAuthRedirectUrl;
+    @Value("${app.id}")
+    String wxAppId;
+    @Value("${dd.auth_redirect_url}")
+    String ddAuthRedirectUrl;
+    @Value("${dd.appid}")
+    String ddAppId;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Integer appId, HttpServletRequest request) {
@@ -63,7 +87,9 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/login/mobile", method = RequestMethod.GET)
-    public String mobile(String lc, Integer appid, HttpServletRequest request) {
+    public String mobile(String lc, Integer appid, HttpServletRequest request) throws UnsupportedEncodingException {
+        String path = request.getContextPath();
+        String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
         Cookie[] cookies = request.getCookies();
         request.setAttribute("appid", appid);
         request.setAttribute("lc", lc);
@@ -85,13 +111,13 @@ public class AuthController {
                         request.setAttribute("user", user);
                     } catch (Exception e) {
                         //报错 重新获取cookie
-                        return "auth/mobile/wechatAuth";
+                        return "redirect:" + String.format(wxAuthRedirectUrl, wxAppId, URLEncoder.encode(basePath + "/auth/login/mobile/code?lc=" + request.getAttribute("lc") + "&appid=" + request.getAttribute("appid"), "UTF-8"), "app1");
                     }
-                    return "auth/mobile/login";
+                    return "auth/mobile/wxLogin";
                 }
             }
         }
-        return "auth/mobile/wechatAuth";
+        return "redirect:" + String.format(wxAuthRedirectUrl, wxAppId, URLEncoder.encode(basePath + "/auth/login/mobile/code?lc=" + request.getAttribute("lc") + "&appid=" + request.getAttribute("appid"), "UTF-8"), "app1");
     }
 
     @RequestMapping(value = "/login/mobile/code", method = RequestMethod.GET)
@@ -117,10 +143,43 @@ public class AuthController {
                 }
             } catch (Exception e) {
                 request.setAttribute("state", false);
-                return "auth/mobile/login";
+                return "auth/mobile/wxlogin";
             }
         }
-        return "auth/mobile/login";
+        return "auth/mobile/wxlogin";
+    }
+
+
+    /**
+     * 打开钉钉确认登陆页面 并获取用户信息
+     *
+     * @param lc
+     * @param appId
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/login/ding", method = RequestMethod.GET)
+    public String dingLogin(String lc, Integer appId, HttpServletRequest request) {
+        try {
+            String urlString = request.getRequestURL().toString();
+            String queryString = request.getQueryString();
+            String queryStringEncode = null;
+            String url;
+            if (queryString != null) {
+                queryStringEncode = URLDecoder.decode(queryString);
+                url = urlString + "?" + queryStringEncode;
+            } else {
+                url = urlString;
+            }
+            JsApiConfig js = ddapi.jsApiConfig(url);
+            request.setAttribute("jsApiConfig", js);
+            request.setAttribute("lc", lc);
+            request.setAttribute("appid", appId);
+            request.setAttribute("url", url);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return "auth/mobile/ddlogin";
     }
 
     @RequestMapping(value = "/login/mobile/confirm", method = RequestMethod.GET)
@@ -144,6 +203,74 @@ public class AuthController {
         return result;
     }
 
+    /**
+     * 钉钉扫码登陆
+     *
+     * @return
+     * @throws WeixinException
+     */
+    @RequestMapping(value = "/login/ding/user", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getUserInfo(String userid, String lc, Integer appid) {
+        Result result = new Result();
+        if (userid != null && !"".equals(userid)) {
+            try {
+                List<TUserAndAgent> apps = userAndAgentRepository.findByUseridAndAgentid(userid, appid);
+                if (apps != null && apps.size() != 0) {
+                    //有权限
+                    loginWebSocketHandler.sendMessageToUser(new TextMessage("scan:success"), lc);
+                    result.setSuccess(true);
+                } else {
+                    result.setSuccess(false);
+                    result.setMsg("对该应用无权限");
+                }
+            } catch (Exception e) {
+                result.setSuccess(false);
+                result.setObj(e);
+                result.setMsg(e.getLocalizedMessage());
+            }
+        } else {
+            result.setSuccess(false);
+            result.setMsg("code 不能为空");
+        }
+        return result;
+    }
+
+    /**
+     *
+     * 钉钉手机端 登陆确认
+     * @param lc
+     * @param userId
+     * @param appId
+     * @return
+     */
+    @RequestMapping(value = "/login/ding/confirm", method = RequestMethod.GET)
+    @ResponseBody
+    public Result dingConfirm(String lc, String userId, int appId) {
+        //判断其对应用是否有权限
+        List<TUserAndAgent> apps = userAndAgentRepository.findByUseridAndAgentid(userId, appId);
+        Result result = new Result(true, "");
+        if (apps != null && apps.size() != 0) {
+            TUser ddUser = userRepository.findOne(userId);
+            User user = new User(ddUser.getUserid(), ddUser.getName());
+            user.setAvatar(ddUser.getAvatar());
+            user.setEmail(ddUser.getEmail());
+            loginCodeService.cacheUser(lc + appId, user);
+            loginWebSocketHandler.sendMessageToUser(new TextMessage("login:" + lc), lc);
+        } else {
+            result.setSuccess(false);
+            result.setMsg("没有权限");
+        }
+        return result;
+    }
+
+    /**
+     * 通过CODE获取用户信息和菜单权限
+     *
+     * @param code
+     * @param appId
+     * @return
+     */
     @RequestMapping(value = "/user/code", method = RequestMethod.GET)
     @ResponseBody
     public Result loginCode(String code, Integer appId) {

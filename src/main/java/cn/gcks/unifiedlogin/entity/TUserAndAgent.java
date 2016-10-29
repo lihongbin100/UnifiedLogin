@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "qy_user_agent")
+@Table(name = "user_agent")
 @Data
 @IdClass(TUserAndAgent.class)
 public class TUserAndAgent implements java.io.Serializable{

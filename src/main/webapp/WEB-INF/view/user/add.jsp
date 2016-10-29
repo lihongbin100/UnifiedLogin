@@ -13,103 +13,45 @@
 </style>
 <link href="<%=basePath%>/css/fileinput.min.css" rel="stylesheet">
 <!--content-->
-<form action="<%=basePath%>/platform/addressbook/edit" id="addressbookForm" enctype="multipart/form-data" method="post"
+<form action="<%=basePath%>/app/save" id="addAppForm" enctype="multipart/form-data" method="post"
       class="form-horizontal">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">编辑成员</h4>
+        <h4 class="modal-title" id="myModalLabel">编辑应用</h4>
     </div>
     <div class="modal-body">
 
-        <input name="id" value="${user.userid}" class="hidden">
-
         <div class="form-group">
-            <label class="col-sm-3 control-label">头像<i class="require-input">*</i> :</label>
+            <label class="col-sm-3 control-label">id(自动生成) <i class="require-input">*</i>:</label>
 
             <div class="col-sm-8">
-                <input id="file-0a" class="file" name="file" value="${user.avator}" required type="file" multiple
-                       data-min-file-count="1"
-                       data-show-upload="false">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-3 control-label">账号 <i class="require-input">*</i>:</label>
-
-            <div class="col-sm-8">
-                <input type="text" name="userid" value="${user.userid}" required class="form-control"/>
+                <input type="text" name="userid" required class="form-control"/>
 
                 <div class="alert alert-danger hidden" id="userid-state"></div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label">姓名 :</label>
+            <label class="col-sm-3 control-label">应用名 :</label>
 
             <div class="col-sm-8">
-                <input type="text" name="name" value="${user.username}" required class="form-control"/>
+                <input type="text" name="name" required class="form-control"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">性别 :</label>
+            <label class="col-sm-3 control-label">负责人 :</label>
 
             <div class="col-sm-8">
-                <label>
-
-                    <input type="radio" name="gender" value="1" <c:if test="${user.gender=='1'}">checked </c:if>/>
-                    男</label>
-
-                <label>
-                    <input type="radio" name="gender" value="2" <c:if test="${user.gender=='2'}">checked </c:if>/>
-                    女</label>
+                <input type="text" name="weixinid" required class="form-control"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">微信号 :</label>
+            <label class="col-sm-3 control-label">登录地址 :</label>
 
             <div class="col-sm-8">
-                <input type="text" name="weixinid" value="${user.weixinid}" required class="form-control"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">手机号 :</label>
-
-            <div class="col-sm-8">
-                <input type="tel" name="mobile" id="number_validate" value="${user.mobile}" class="form-control"
-                       placeholder="手机号码"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">邮箱 :</label>
-
-            <div class="col-sm-8">
-                <input type="email" class="form-control" value="${user.email}" name="email" placeholder="邮箱"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">部门 :</label>
-
-            <div class="col-sm-8">
-
-
-                <div class="alert alert-success">
-                    <div id="deps">
-                        <br class="clear">
-                    </div>
-                    <hr>
-                    <div id="departmentTreeEdit" class="alert alert-info ztree">
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">职位 :</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" value="${user.mobile}" name="position" placeholder="地址"/>
+                <input type="tel" name="mobile" id="number_validate" class="form-control"
+                placeholder="url"/>
             </div>
         </div>
     </div>
@@ -133,16 +75,19 @@
         $("input[name=userid]").change(function () {
             isUserId();
         });
-        $("#addressbookForm").validate({
-            messages:{
-                file:{
-                    required:""
+        $("#addAppForm").validate({
+            messages: {
+                file: {
+                    required: ""
                 }
             },
             submitHandler: function (form) {
-                $(form).append('<input type="text" class="hidden" value="' + depArray.toString() + '" name="departmentid"/>');
+//                $(form).append('<input type="text" class="hidden" ' + depArray.toString() + '" name="departmentid"/>');
                 var $btn = $("#save").button('loading');
                 $(form).ajaxSubmit({
+                    data: {
+                        "departmentid": depArray
+                    },
                     dataType: "",
                     success: function (data) {
                         if (data.success) {

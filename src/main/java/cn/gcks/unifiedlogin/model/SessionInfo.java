@@ -1,7 +1,6 @@
 package cn.gcks.unifiedlogin.model;
 
 
-import cn.gcks.unifiedlogin.service.QyAPI;
 import lombok.Data;
 
 /**

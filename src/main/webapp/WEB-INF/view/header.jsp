@@ -14,7 +14,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="gcks-ul">
 <head>
     <title>后台-微培训</title>
     <meta charset="UTF-8"/>
@@ -27,7 +27,8 @@
     <script src="<%=basePath%>/js/jQuery-2.1.4.min.js"></script>
     <script src="<%=basePath%>/js/jquery.form.js"></script>
     <script src="<%=basePath%>/lib/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-
+    <script src="<%=basePath%>/lib/angularjs/angular.min.js"></script>
+    <script src="<%=basePath%>/js/common.js"></script>
 </head>
 <body>
 
@@ -64,8 +65,8 @@
                             <span>菜单管理</span></a>
                     </li>
                     <li role="presentation">
-                        <a href="<%=basePath%>/message">
-                            <i class="glyphicon glyphicon-volume-up"></i> <span>通知中心</span>
+                        <a href="<%=basePath%>/log">
+                            <i class="glyphicon glyphicon-volume-up"></i> <span>日志管理</span>
                         </a>
 
                     </li>

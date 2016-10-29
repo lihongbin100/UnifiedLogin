@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "auth_user_menu")
+@Table(name = "user_menu")
 @Data
 @IdClass(TUserAndMenu.class)
 public class TUserAndMenu implements java.io.Serializable {

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 权限拦截器
 
- * 
+ *
  */
 public class SecurityInterceptor implements HandlerInterceptor {
 
@@ -42,16 +42,16 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 		String requestUri = request.getRequestURI();
 		SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute(Constants.Config.SESSION_USER_NAME);
-		if (sessionInfo == null || "".equalsIgnoreCase(sessionInfo.getId())) {// 如果没有登录或登录超时
-			request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
-			if( (RequestMethod.GET).equals(request.getMethod())){
-				request.setAttribute("handlerUrl",requestUri);
-			}
-			response.sendRedirect(basePath+"/auth/login?appId=1");
+//		if (sessionInfo == null || "".equalsIgnoreCase(sessionInfo.getId())) {// 如果没有登录或登录超时
+//			request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
+//			if( (RequestMethod.GET).equals(request.getMethod())){
+//				request.setAttribute("handlerUrl",requestUri);
+//			}
+//			response.sendRedirect(basePath+"/auth/login?appId=1");
 //			usertype	否	redirect_uri支持登录的类型，有member(成员登录)、admin(管理员登录)、all(成员或管理员皆可登录)，默认值为admin
 //			response.sendRedirect("https://qy.weixin.qq.com/cgi-bin/loginpage?corp_id=wxf54e1b5e0b62fa96&redirect_uri=http%3A%2F%2Fwww.wexue.top:8081%2Fauth%2Flogin&usertype=all");
-			return false;
-		}
+//			return false;
+//		}
 		return true;
 	}
 }

@@ -3,6 +3,7 @@ package cn.gcks.unifiedlogin.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,15 +12,13 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "qy_agent")
+@Table(name = "agent")
 public class TAgentInfo implements java.io.Serializable {
     @Id
+    @GeneratedValue
     private Integer id;
     private String name;
-    private Integer authType;// int(16) NOT NULL,
-    private Integer appId;// int(16) NOT NULL COMMENT '服务商套件中的对应应用id',
-    private String apiGroup;// varchar(256) NOT NULL,
-    private Integer privilegeInfoId;// int(16) NOT NULL,
-    private String corpId;// varchar(128) NOT NULL,
+    private String description;
+    private String superManager;//超级管理ID
     private String loginUrl;
 }

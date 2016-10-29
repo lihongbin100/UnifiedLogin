@@ -15,7 +15,7 @@
     <!--Action boxes-->
     <div class="container-fluid">
         <div>
-            <button type="button" class="btn btn-default" href="<%=basePath%>/platform/project/addJsp"
+            <button type="button" class="btn btn-default" href="<%=basePath%>/role/addPage"
                     data-toggle="modal" data-target="#Modal">
                 <i class="glyphicon glyphicon-plus"></i> 新增角色
             </button>
@@ -33,38 +33,23 @@
                     <tr>
                         <th>序号ID</th>
                         <th>角色名</th>
-                        <th>角色权限</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${projects}" var="project" varStatus="s">
+                    <c:forEach items="${roles}" var="role" varStatus="s">
                         <tr>
-                            <td>#${ s.index + 1}</td>
+                            <td>${role.id}</td>
                             <td>
                                 <div class="tool" data-toggle="tooltip" data-placement="right"
-                                     data-title="简介：${project.prodesc}">${project.proname}</div>
-                            </td>
-                            <td>${project.starttime}</td>
-                            <td>${project.endtime}</td>
-                            <td>
-                                <button class="btn btn-xs btn-success" onclick="javascript:window.location.href='<%=basePath%>/platform/course?projectid=${project.id}'">课程</button>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-xs btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        学习小组 <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="<%=basePath%>/platform/project/createStudyGroupJsp?projectid=${project.id}">创建小组</a></li>
-                                        <li><a href="<%=basePath%>/platform/group?projectid=${project.id}">已创建的小组</a></li>
-                                    </ul>
-                                </div>
+                                     data-title="简介：${role.description}">${role.name}</div>
                             </td>
                             <td>
                                 <button class="btn btn-xs btn-primary"
-                                        href="<%=basePath%>/platform/project/editJsp?id=${project.id}"
-                                        data-toggle="modal" data-target="#Modal${project.id}">编辑
+                                        href="<%=basePath%>/role/editPage?id=${role.id}"
+                                        data-toggle="modal" data-target="#Modal${role.id}">编辑
                                 </button>
-                                <div class="modal fade" id="Modal${project.id}" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="Modal${role.id}" tabindex="-1" role="dialog"
                                      aria-labelledby="myModalLabel">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -72,15 +57,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button data-id="${project.id}" data-loading-text="删除中..."
-                                        class="delete btn btn-xs btn-danger">删除
-                                </button>
+                                <%--<button data-id="${role.id}" data-loading-text="删除中..."--%>
+                                        <%--class="delete btn btn-xs btn-danger">删除--%>
+                                <%--</button>--%>
                             </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
-                <c:if test="${empty projects}">
+                <c:if test="${empty roles}">
                     <div class="no-content">无内容</div>
                 </c:if>
             </div>
@@ -107,7 +92,7 @@
             var deleteBtn = $(this);
             var $btn = deleteBtn.button('loading');
             $.ajax({
-                url: "<%=basePath%>/platform/project/delete?id=" + $(this).data("id"),
+                url: "<%=basePath%>/role/delete?id=" + $(this).data("id"),
                 success: function (data) {
                     location.reload();
                 }

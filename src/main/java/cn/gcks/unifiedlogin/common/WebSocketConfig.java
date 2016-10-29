@@ -1,5 +1,6 @@
 package cn.gcks.unifiedlogin.common;
 
+import cn.gcks.unifiedlogin.controller.UserWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,9 +19,12 @@ import cn.gcks.unifiedlogin.controller.LoginWebSocketHandler;
 public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocketConfigurer {
     @Autowired
     LoginWebSocketHandler loginWebSocketHandler;
+    @Autowired
+    UserWebSocketHandler userWebSocketHandler;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 //        registry.addHandler(systemWebSocketHandler(),"/webSocketServer").addInterceptors(new WebSocketHandshakeInterceptor())
         registry.addHandler(loginWebSocketHandler, "webSocketServer/login").setAllowedOrigins("*").withSockJS();
+        registry.addHandler(userWebSocketHandler, "webSocketServer/user").setAllowedOrigins("*").withSockJS();
     }
 }

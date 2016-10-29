@@ -8,98 +8,116 @@
 %>
 <!--header-->
 <jsp:include page="../header.jsp"></jsp:include>
+<style>
+    a:hover{
+        clear: both;
+    }
+</style>
 <!--header-->
 
 <!--content-->
 <div id="content" class="content">
     <!--Action boxes-->
     <div class="container-fluid">
-        <div>
-            <button type="button" class="btn btn-default" href="<%=basePath%>/platform/project/addJsp"
-                    data-toggle="modal" data-target="#Modal">
-                <i class="glyphicon glyphicon-plus"></i> 新增应用
-            </button>
-            <hr>
+        <div class="col-sm-1 shu">
+            <a href="#">
+                <div class="active">通讯录</div>
+            </a>
         </div>
-        <!--End-Action boxes-->
-
-        <div class="widget-box">
-            <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-                <%--<h5>项目</h5>--%>
+        <div class="col-sm-11">
+            <div>
+                <button type="button" class="btn btn-default" href="<%=basePath%>/app/addPage"
+                        data-toggle="modal" data-target="#Modal">
+                    <i class="glyphicon glyphicon-plus"></i> 新增应用
+                </button>
+                <hr>
             </div>
-            <div class="widget-content nopadding">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>序号ID</th>
-                        <th>应用名</th>
-                        <th>负责人</th>
-                        <th>登录地址</th>
-                        <th>普通管理员</th>
-                        <th>登陆日志</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach items="${projects}" var="project" varStatus="s">
+            <!--End-Action boxes-->
+
+            <div class="widget-box">
+                <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
+                    <%--<h5>项目</h5>--%>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <td>#${ s.index + 1}</td>
-                            <td>
-                                <div class="tool" data-toggle="tooltip" data-placement="right"
-                                     data-title="简介：${project.prodesc}">${project.proname}</div>
-                            </td>
-                            <td>${project.starttime}</td>
-                            <td>${project.endtime}</td>
-                            <td>
-                                <button class="btn btn-xs btn-success" onclick="javascript:window.location.href='<%=basePath%>/platform/course?projectid=${project.id}'">课程</button>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-xs btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        学习小组 <span class="caret"></span>
+                            <th>序号ID</th>
+                            <th>应用名</th>
+                            <th>登录地址</th>
+                            <th>负责人</th>
+                            <th>功能</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${agentInfos.content}" var="agentInfo" varStatus="s">
+                            <tr>
+                                <td>${agentInfo.id}</td>
+                                <td>
+                                    <div class="tool" data-toggle="tooltip" data-placement="right"
+                                         data-title="简介：${agentInfo.description}">${agentInfo.name}</div>
+                                </td>
+                                <td>${agentInfo.loginUrl}</td>
+                                <td>
+                                        ${agentInfo.superManager}
+                                </td>
+                                <td>
+                                    <button class="btn btn-xs btn-info"
+                                            href="<%=basePath%>/platform/project/editJsp?id=${agentInfo.id}"
+                                            data-toggle="modal" data-target="#Modal${agentInfo.id}">添加管理员
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="<%=basePath%>/platform/project/createStudyGroupJsp?projectid=${project.id}">创建小组</a></li>
-                                        <li><a href="<%=basePath%>/platform/group?projectid=${project.id}">已创建的小组</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                            <td>
-                                <button class="btn btn-xs btn-primary"
-                                        href="<%=basePath%>/platform/project/editJsp?id=${project.id}"
-                                        data-toggle="modal" data-target="#Modal${project.id}">编辑
-                                </button>
-                                <div class="modal fade" id="Modal${project.id}" tabindex="-1" role="dialog"
-                                     aria-labelledby="myModalLabel">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="loading"><img src="<%=basePath%>/img/loading.gif"></div>
+                                    <a href="<%=basePath%>/menu?appId=${agentInfo.id}">
+                                        <button class="btn btn-xs btn-success">查看菜单
+                                        </button>
+                                    </a>
+                                    <button class="btn btn-xs btn-info"
+                                            href="<%=basePath%>/log?id=${agentInfo.id}"
+                                            data-toggle="modal" data-target="#Modal${agentInfo.id}">查看日志
+                                    </button>
+                                </td>
+                                <td>
+
+                                    <button class="btn btn-xs btn-primary"
+                                            href="<%=basePath%>/app/editPage?appId=${agentInfo.id}"
+                                            data-toggle="modal" data-target="#Modal${agentInfo.id}">编辑
+                                    </button>
+                                    <div class="modal fade" id="Modal${agentInfo.id}" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="loading"><img src="<%=basePath%>/img/loading.gif"></div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <button data-id="${project.id}" data-loading-text="删除中..."
-                                        class="delete btn btn-xs btn-danger">删除
-                                </button>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-                <c:if test="${empty projects}">
-                    <div class="no-content">无内容</div>
-                </c:if>
-            </div>
-            <div class="page">
-                <div class="right">
-                    <c:if test="${prepage>0}">
-                        <button onclick="javascript:window.location.href='<%=basePath%>/platform/project?startPage=${prepage}'"
-                                id="btn-pre" class="btn btn-mini">上一页
-                        </button>
+                                    <button data-id="${agentInfo.id}" data-loading-text="删除中..."
+                                            class="delete btn btn-xs btn-danger">删除
+                                    </button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                    <c:if test="${empty agentInfos.content}">
+                        <div class="no-content">无内容</div>
                     </c:if>
-                    <button onclick="javascript:window.location.href='<%=basePath%>/platform/project?startPage=${nextpage}'"
-                            id="btn-next" class="btn btn-mini btn-inverse">下一页
-                    </button>
                 </div>
+                <c:if test="${!empty agentInfos.content}">
+                    <div class="page">
+                        <div class="right">
+                            <c:if test="${agentInfos.number>0}">
+                                <button onclick="javascript:window.location.href='<%=basePath%>/app?page=${agentInfos.number-1}'"
+                                        id="btn-pre" class="btn btn-mini">上一页
+                                </button>
+                            </c:if>
+                            <button onclick="javascript:window.location.href='<%=basePath%>/app?page=${agentInfos.number+1}'"
+                                    id="btn-next" class="btn btn-mini btn-inverse">下一页
+                            </button>
+                        </div>
+                    </div>
+                </c:if>
+                <div class="clear"></div>
             </div>
-            <div class="clear"></div>
         </div>
     </div>
 </div>
@@ -110,7 +128,7 @@
             var deleteBtn = $(this);
             var $btn = deleteBtn.button('loading');
             $.ajax({
-                url: "<%=basePath%>/platform/project/delete?id=" + $(this).data("id"),
+                url: "<%=basePath%>/app/delete?appId=" + $(this).data("id"),
                 success: function (data) {
                     location.reload();
                 }

@@ -15,7 +15,7 @@
 %>
 <html>
 <head>
-    <title>应用登陆</title>
+    <title>应用登陆-微信登录</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="renderer" content="webkit">

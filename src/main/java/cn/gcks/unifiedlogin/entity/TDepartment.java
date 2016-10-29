@@ -17,7 +17,6 @@ import javax.persistence.Table;
 @Data
 public class TDepartment implements java.io.Serializable{
     @Id
-    @GeneratedValue
     private Integer departmentid;//int(128) NOT NULL AUTO_INCREMENT
     private String corpid;// varchar(256) NOT NULL,
     private String departmentname;// varchar(256) NOT NULL,

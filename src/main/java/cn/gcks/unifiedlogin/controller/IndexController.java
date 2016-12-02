@@ -1,5 +1,6 @@
 package cn.gcks.unifiedlogin.controller;
 
+import cn.gcks.unifiedlogin.entity.TUser;
 import cn.gcks.unifiedlogin.entity.TUserAndMenu;
 import cn.gcks.unifiedlogin.model.LoginUser;
 import cn.gcks.unifiedlogin.model.SessionInfo;
@@ -72,7 +73,7 @@ public class IndexController {
         } else {
             List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), appId);
             LoginUser loginUser = new LoginUser();
-            loginUser.setUser(user);
+            loginUser.setUser(new TUser(user.getUserId(),user.getName(),user.getAvatar(),"0"));
             String[] menus = new String[tUserAndMenus.size()];
             for (int i = 0; i < tUserAndMenus.size(); i++) {
                 menus[i] = tUserAndMenus.get(i).getMenusign();

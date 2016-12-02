@@ -8,20 +8,18 @@
 %>
 <!--header-->
 <jsp:include page="../header.jsp"></jsp:include>
-<style>
-    a:hover{
-        clear: both;
-    }
-</style>
 <!--header-->
 
 <!--content-->
 <div id="content" class="content">
     <!--Action boxes-->
     <div class="container-fluid">
-        <div class="col-sm-1 shu">
-            <a href="#">
-                <div class="active">通讯录</div>
+        <div class="col-sm-1 list-group">
+            <a href="<%=basePath%>/app" class="list-group-item active">
+                应用列表
+            </a>
+            <a href="#" class="list-group-item">
+                管理员权限
             </a>
         </div>
         <div class="col-sm-11">
@@ -63,12 +61,13 @@
                                         ${agentInfo.superManager}
                                 </td>
                                 <td>
-                                    <button class="btn btn-xs btn-info"
-                                            href="<%=basePath%>/platform/project/editJsp?id=${agentInfo.id}"
-                                            data-toggle="modal" data-target="#Modal${agentInfo.id}">添加管理员
-                                    </button>
                                     <a href="<%=basePath%>/menu?appId=${agentInfo.id}">
-                                        <button class="btn btn-xs btn-success">查看菜单
+                                        <button class="btn btn-xs btn-success">菜单
+                                        </button>
+                                    </a>
+                                    <a href="<%=basePath%>/app/managers?id=${agentInfo.id}">
+                                        <button class="btn btn-xs btn-info">
+                                            管理员
                                         </button>
                                     </a>
                                     <button class="btn btn-xs btn-info"
@@ -80,16 +79,9 @@
 
                                     <button class="btn btn-xs btn-primary"
                                             href="<%=basePath%>/app/editPage?appId=${agentInfo.id}"
-                                            data-toggle="modal" data-target="#Modal${agentInfo.id}">编辑
+                                            data-toggle="modal" data-target="#Modal">编辑
                                     </button>
-                                    <div class="modal fade" id="Modal${agentInfo.id}" tabindex="-1" role="dialog"
-                                         aria-labelledby="myModalLabel">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="loading"><img src="<%=basePath%>/img/loading.gif"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                     <button data-id="${agentInfo.id}" data-loading-text="删除中..."
                                             class="delete btn btn-xs btn-danger">删除
                                     </button>

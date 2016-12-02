@@ -13,13 +13,14 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "user_agent")
+@Table(name = "user_role")
 @Data
-@IdClass(TUserAndAgent.class)
-public class TUserAndAgent implements java.io.Serializable{
-    @Id
-    private Integer agentid;
+@IdClass(TUserAndRole.class)
+public class TUserAndRole implements java.io.Serializable {
     @Id
     private String userid;
-
+    @Id
+    private Integer roleid;
+    @Id
+    private Integer agentid;
 }

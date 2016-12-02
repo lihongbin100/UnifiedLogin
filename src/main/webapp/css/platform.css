@@ -37,6 +37,10 @@ td {
     clear: both;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .pro-desc {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -45,9 +49,9 @@ td {
 }
 
 .content {
-    margin:10px 50px 50px 50px;
+    margin: 10px 50px 50px 50px;
     padding: 50px;
-    min-height: 600px;
+    min-height: 800px;
     min-width: 1200px;
     background-color: #ffffff;
 }
@@ -169,21 +173,32 @@ input[type=file] {
     color: red;
 }
 
-.shu{
+.shu {
     border-right: 1px solid #e7e7eb;
     padding-left: 0px;
     padding-right: 0px;
 }
-.shu div{
+
+.shu > div, .shu > a > div {
     text-align: center;
     line-height: 34px;
     width: 100%;
     cursor: pointer;
 }
-.shu div:hover{
+
+.shu div:hover {
     background-color: #e7e7eb;
 }
-.shu div.active{
+
+.shu div.active {
     background-color: #337ab7;
     color: #ffffff;
+}
+
+ul li {
+    list-style: none;
+}
+
+td {
+    word-break:break-all;
 }

@@ -10,22 +10,17 @@
 <!--header-->
 <jsp:include page="../header.jsp"></jsp:include>
 <style>
-    .ztree {
-        overflow-y: auto;
-        max-height: 400px;
-    }
-    .userlist{
-        max-height: 400px;
+    .ztree, .userlist {
+        max-height: 600px;
         overflow-y: auto;
     }
-
 </style>
 <!--header-->
 <script src="<%=basePath%>/lib/JQuery_z_tree/js/jquery.ztree.core-3.5.min.js"></script>
 <script src="<%=basePath%>/lib/JQuery_z_tree/js/jquery.ztree.excheck-3.5.min.js"></script>
 <link rel="stylesheet" href="<%=basePath%>/lib/JQuery_z_tree/css/zTreeStyle/zTreeStyle.css">
-<link rel="stylesheet" href="<%=basePath%>/lib/bootstrap-3.3.5-dist/css/green.css"/>
-<script src="<%=basePath%>/lib/bootstrap-3.3.5-dist/js/icheck.min.js"></script>
+<link rel="stylesheet" href="<%=basePath%>/lib/icheck/green.css"/>
+<script src="<%=basePath%>/lib/icheck/icheck.min.js"></script>
 <div class="content" ng-controller="userShow">
     <div class="col-sm-1 shu">
         <a href="#">
@@ -58,38 +53,33 @@
                 </div>
             </div>
             <div class="col-sm-9">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        员工
-                    </div>
-                    <div class="panel-body" ng-if="users.length==0">
-                        <label> 无数据</label>
-                    </div>
-                    <div class="panel-body userlist" ng-if="users.length!=0">
-                        <table class="table table-hover">
-                            <thead>
-                            <th>姓名</th>
-                            <th>账号</th>
-                            <th>职位</th>
-                            <th>手机</th>
-                            <th>邮箱</th>
-                            </thead>
-                            <tbody id="userContent" class="center">
-                            <tr ng-repeat="user in users" ng-model="users">
-                                <td style="float: left">
-                                    <img ng-if="user.avatar" src="{{user.avatar}}"
-                                         style="height: 20px;width: 20px;margin-right: 10px">
-                                    <i ng-if="!user.avatar" class="glyphicon glyphicon-user"></i>
-                                    {{user.name}}
-                                </td>
-                                <td>{{user.userid}}</td>
-                                <td>{{user.position}}</td>
-                                <td>{{user.mobile}}</td>
-                                <td>{{user.email}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="panel-body" ng-if="users.length==0">
+                    <label> 无数据</label>
+                </div>
+                <div class="panel-body userlist" ng-if="users.length!=0">
+                    <table class="table table-hover">
+                        <thead>
+                        <th>姓名</th>
+                        <th>账号</th>
+                        <th>职位</th>
+                        <th>手机</th>
+                        <th>邮箱</th>
+                        </thead>
+                        <tbody id="userContent" class="center">
+                        <tr ng-repeat="user in users" ng-model="users">
+                            <td style="float: left">
+                                <img ng-if="user.avatar" src="{{user.avatar}}"
+                                     style="height: 20px;width: 20px;margin-right: 10px">
+                                <i ng-if="!user.avatar" class="glyphicon glyphicon-user"></i>
+                                {{user.name}}
+                            </td>
+                            <td>{{user.userid}}</td>
+                            <td>{{user.position}}</td>
+                            <td>{{user.mobile}}</td>
+                            <td>{{user.email}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -115,7 +105,7 @@
             increaseArea: '20%' // optional
         });
 
-        showUsers(1);
+        showUsers(15564632);
         function showUsers(depId) {
             $http.get("<%=basePath%>/user/departmentUsers?start=0&departmentId=" + depId)
                     .success(function (response) {

@@ -12,7 +12,6 @@
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
-    String serverPath = request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <html>
 <head>
@@ -42,14 +41,15 @@
         }
 
         .login-div {
-            width: 500px;
-            height: 350px;
-            background-color: #FFFFFF;
+            width: 30%;
+            height: 50%;
+            background-color: rgba(255,255,255,0.5);
             box-shadow: 2px 2px 2px 2px #888888;
-            margin: 100px 50px;
+            margin: 10% 10% 0px 0px;
             position: relative;
             float: right;
             display: inline-block;
+            text-align: center;
         }
 
         #wxQrcode {
@@ -59,10 +59,9 @@
             float: left;
         }
         #ddQrcode {
-            width: 180px;
-            height: 180px;
-            margin: 50px 50px 0px 0px;
-            float: right;
+            width: 80%;
+            height: auto;
+            margin: 10% auto;
         }
 
         table td {
@@ -103,8 +102,8 @@
                 });
                 $('#ddQrcode').qrcode({
                     render: "canvas",//设置渲染方式
-                    width: 180,     //设置宽度
-                    height: 180,     //设置高度
+                    width: 200,     //设置宽度
+                    height: 200,     //设置高度
                     background: "#ffffff",//背景颜色
                     foreground: "#00BCD4",
                     text: '<%=basePath%>/auth/login/ding?appId=${appid}&lc=' + evnt.data
@@ -116,7 +115,7 @@
 <body>
 <div class="container-fluid">
     <div class="header row">
-        <img src="<%=basePath%>/img/logo.png">
+        <img src="<%=basePath%>/img/logo.png">: <label class="label label-info">${agentInfo.name}</label>
     </div>
 
     <div id="level">
@@ -174,13 +173,13 @@
 
     <div class="login-div row">
         <c:if test="${register}">
-            <div id="wxQrcode">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                    </div>
-                </div>
-            </div>
+            <%--<div id="wxQrcode">--%>
+                <%--<div class="progress">--%>
+                    <%--<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"--%>
+                         <%--aria-valuemin="0" aria-valuemax="100" style="width: 100%">--%>
+                    <%--</div>--%>
+                <%--</div>--%>
+            <%--</div>--%>
 
             <div id="ddQrcode">
                 <div class="progress">
@@ -190,12 +189,13 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="label label-success" style="float: left;margin: 30px 0px 0px 100px;">微信扫码登陆</div>
-            <div class="label label-info" style="float: right;margin: 30px 100px 0px 0px;">钉钉扫码登陆</div>
+            <%--<div class="label label-success" style="float: left;margin: 30px 0px 0px 100px;">微信扫码登陆</div>--%>
+            <div class="label label-info" style="margin-top: 5%;display: inline-block">钉钉扫码登陆</div>
         </c:if>
         <c:if test="${!register}">
-            <div class="alert alert-danger">
-                此应用未注册，或者未配置登录地址，请联系管理员
+
+            <div class="alert alert-danger" style="margin: 50px">
+                <label class="label label-danger">${agentInfo.name}</label> 未注册，或者未配置登录地址，请联系管理员
             </div>
         </c:if>
     </div>

@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="gcks-ul">
 <head>
-    <title>后台-微培训</title>
+    <title>国创科视-统一登录系统</title>
     <meta charset="UTF-8"/>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0,initial-scale=1.0, maximum-scale=1.0, user-scalable=no">

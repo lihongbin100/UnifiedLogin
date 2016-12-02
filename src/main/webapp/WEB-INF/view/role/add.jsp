@@ -20,7 +20,7 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">编辑角色</h4>
+        <h4 class="modal-title" id="myModalLabel">编辑角色:<label class="label label-info">${agentInfo.name}</label></h4>
     </div>
     <div class="modal-body">
         <c:if test="${edit}">
@@ -40,6 +40,7 @@
 
             <div class="col-sm-7">
                 <input type="text" value="${role.name}" name="name" required class="form-control"/>
+                <input type="text" name="agentId" value="${role.agentId}" class="form-control hidden"/>
             </div>
             <div class="col-sm-1 i-star">
                 <i class="glyphicon glyphicon-asterisk"></i>
@@ -56,15 +57,25 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">权限 :</label>
+            <label class="col-sm-3 control-label">标示 :</label>
 
             <div class="col-sm-7">
-
+                <input type="text" name="sign" value="${role.sign}" required class="form-control"/>
             </div>
             <div class="col-sm-1 i-star">
                 <i class="glyphicon glyphicon-asterisk"></i>
             </div>
         </div>
+        <%--<div class="form-group">--%>
+            <%--<label class="col-sm-3 control-label">权限 :</label>--%>
+
+            <%--<div class="col-sm-7">--%>
+
+            <%--</div>--%>
+            <%--<div class="col-sm-1 i-star">--%>
+                <%--<i class="glyphicon glyphicon-asterisk"></i>--%>
+            <%--</div>--%>
+        <%--</div>--%>
     </div>
     </div>
     <div class="modal-footer">

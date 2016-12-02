@@ -15,10 +15,29 @@
     <!--Action boxes-->
     <div class="container-fluid">
         <div>
-            <button type="button" class="btn btn-default" href="<%=basePath%>/role/addPage"
-                    data-toggle="modal" data-target="#Modal">
-                <i class="glyphicon glyphicon-plus"></i> 新增角色
-            </button>
+            <div class="btn-group">
+                <button class="btn btn-info">
+                    选择应用：
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span id="selectBtn">${agentInfo.name}</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <c:forEach items="${apps}" var="app" varStatus="s">
+                            <li>
+                                <a href="<%=basePath%>/role?appId=${app.id}">${app.name}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-default" href="<%=basePath%>/role/addPage?agentId=${agentInfo.id}"
+                        data-toggle="modal" data-target="#Modal">
+                    <i class="glyphicon glyphicon-plus"></i> 新增角色
+                </button>
+            </div>
+
             <hr>
         </div>
         <!--End-Action boxes-->
@@ -57,9 +76,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%--<button data-id="${role.id}" data-loading-text="删除中..."--%>
-                                        <%--class="delete btn btn-xs btn-danger">删除--%>
-                                <%--</button>--%>
                             </td>
                         </tr>
                     </c:forEach>
@@ -100,6 +116,8 @@
 
         });
     });
+
+
 </script>
 
 <!--content-->

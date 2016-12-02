@@ -1,6 +1,7 @@
 package cn.gcks.unifiedlogin.model;
 
-import com.foxinmy.weixin4j.qy.model.User;
+import cn.gcks.unifiedlogin.entity.TRole;
+import cn.gcks.unifiedlogin.entity.TUser;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class LoginUser {
-      private User user;
-      private String[] menus;
+    private TUser user;
+    private String[] menus;
+    private TRole role;
 }

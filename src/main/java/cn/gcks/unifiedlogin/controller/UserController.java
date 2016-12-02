@@ -13,6 +13,7 @@ import cn.gcks.unifiedlogin.repository.DepartmentRepository;
 import cn.gcks.unifiedlogin.repository.TaskRepository;
 import cn.gcks.unifiedlogin.repository.UserAndDepartmentRepository;
 import cn.gcks.unifiedlogin.repository.UserRepository;
+import cn.gcks.unifiedlogin.service.CommonService;
 import cn.gcks.unifiedlogin.service.DDAPI;
 import cn.gcks.unifiedlogin.utils.BaseMethod;
 import com.alibaba.fastjson.JSONObject;
@@ -49,6 +50,8 @@ public class UserController {
     UserAndDepartmentRepository userAndDepartmentRepository;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    CommonService commonService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String show(HttpServletRequest request) {
@@ -67,7 +70,7 @@ public class UserController {
         Result result = new Result();
         try {
             List<TUser> userLists = new ArrayList<>();
-            Page<TUserAndDepartment> users = userAndDepartmentRepository.findByDepartmentid(new PageRequest(start, 10), departmentId);
+            List<TUserAndDepartment> users = userAndDepartmentRepository.findByDepartmentid(departmentId);
             for (TUserAndDepartment userAndDepartment : users) {
                 TUser user = userRepository.findOne(userAndDepartment.getUserid());
                 userLists.add(user);
@@ -85,7 +88,7 @@ public class UserController {
     @ResponseBody
     public Result usersByName(String userName) {
         Result result = new Result();
-        List<TUser> users=userRepository.findByNameLike("%"+userName+"%");
+        List<TUser> users = userRepository.findByNameLike("%" + userName + "%");
         result.setSuccess(true);
         result.setObj(users);
         return result;
@@ -96,18 +99,9 @@ public class UserController {
     public Result departmentList() {
         Result result = new Result();
         try {
-            List<TDepartment> departments = departmentRepository.findAll();
-            List jsonArray = new ArrayList<JSONObject>();
-            for (TDepartment department : departments) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", department.getDepartmentid());
-                jsonObject.put("name", department.getDepartmentname());
-                jsonObject.put("open", false);
-                jsonObject.put("pId", department.getParentid());
-                jsonArray.add(jsonObject);
-            }
+            List data = commonService.depList();
             result.setSuccess(true);
-            result.setObj(jsonArray);
+            result.setObj(data);
         } catch (Exception e) {
             result.setSuccess(false);
         } finally {
@@ -121,7 +115,7 @@ public class UserController {
         Result result = new Result();
         TTask tTask = new TTask();
         if (sessionInfo != null) {
-            tTask.setUserid(sessionInfo.getLoginUser().getUser().getUserId());
+            tTask.setUserid(sessionInfo.getLoginUser().getUser().getUserid());
         }
         tTask.setCreatetime(new Date());
         tTask.setType(TaskType.SYNCLOCATION.name());

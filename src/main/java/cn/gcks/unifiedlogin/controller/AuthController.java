@@ -4,16 +4,10 @@ import cn.gcks.unifiedlogin.dingding.api.DDConfigApi;
 import cn.gcks.unifiedlogin.dingding.model.DDUser;
 import cn.gcks.unifiedlogin.dingding.model.JsApiConfig;
 import cn.gcks.unifiedlogin.dingding.utils.SignMethod;
-import cn.gcks.unifiedlogin.entity.TAgentInfo;
-import cn.gcks.unifiedlogin.entity.TUser;
-import cn.gcks.unifiedlogin.entity.TUserAndAgent;
-import cn.gcks.unifiedlogin.entity.TUserAndMenu;
+import cn.gcks.unifiedlogin.entity.*;
 import cn.gcks.unifiedlogin.model.LoginUser;
 import cn.gcks.unifiedlogin.model.Result;
-import cn.gcks.unifiedlogin.repository.AgentInfoRepository;
-import cn.gcks.unifiedlogin.repository.UserAndAgentRepository;
-import cn.gcks.unifiedlogin.repository.UserAndMenuRepository;
-import cn.gcks.unifiedlogin.repository.UserRepository;
+import cn.gcks.unifiedlogin.repository.*;
 import cn.gcks.unifiedlogin.service.DDAPI;
 import cn.gcks.unifiedlogin.service.LoginCodeService;
 import cn.gcks.unifiedlogin.service.QyAPI;
@@ -62,6 +56,11 @@ public class AuthController {
     private LoginWebSocketHandler loginWebSocketHandler;
     @Autowired
     private UserAndMenuRepository userAndMenuRepository;
+    @Autowired
+    private UserAndRoleRepository userAndRoleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
 
     @Value("${wx.auth_redirect_url}")
     String wxAuthRedirectUrl;
@@ -83,6 +82,7 @@ public class AuthController {
             request.setAttribute("appid", appId);
             request.setAttribute("register", true);
         }
+        request.setAttribute("agentInfo", agentInfo);
         return "auth/login";
     }
 
@@ -237,8 +237,8 @@ public class AuthController {
     }
 
     /**
-     *
      * 钉钉手机端 登陆确认
+     *
      * @param lc
      * @param userId
      * @param appId
@@ -264,6 +264,25 @@ public class AuthController {
         return result;
     }
 
+    @RequestMapping(value = "/userCheck", method = RequestMethod.GET)
+    @ResponseBody
+    public Result userCheck(String tel) {
+        Result result = new Result();
+        try {
+            TUser tUser = userRepository.findByMobile(tel);
+            if (tUser == null) {
+                result.setSuccess(false);
+            } else {
+                result.setSuccess(true);
+                result.setObj(tUser);
+            }
+        } catch (Exception e) {
+            result.setSuccess(false);
+        } finally {
+            return result;
+        }
+    }
+
     /**
      * 通过CODE获取用户信息和菜单权限
      *
@@ -282,10 +301,15 @@ public class AuthController {
         } else {
             List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), appId);
             LoginUser loginUser = new LoginUser();
-            loginUser.setUser(user);
+            loginUser.setUser(new TUser(user.getUserId(),user.getName(),user.getAvatar(),"0"));
             String[] menus = new String[tUserAndMenus.size()];
             for (int i = 0; i < tUserAndMenus.size(); i++) {
                 menus[i] = tUserAndMenus.get(i).getMenusign();
+            }
+            TUserAndRole tUserAndRole = userAndRoleRepository.findByUseridAndAgentid(user.getUserId(), appId);
+            if (tUserAndRole != null) {
+                TRole tr = roleRepository.findOne(tUserAndRole.getRoleid());
+                loginUser.setRole(tr);
             }
             loginUser.setMenus(menus);
             result.setSuccess(true);

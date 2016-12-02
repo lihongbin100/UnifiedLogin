@@ -21,4 +21,5 @@ public class TAgentInfo implements java.io.Serializable {
     private String description;
     private String superManager;//超级管理ID
     private String loginUrl;
+    private String managers;
 }

@@ -12,7 +12,9 @@
 <!--content-->
 <div class="content">
     <div class="jumbotron" style="text-align: center">
-            <h1>Hello, world!</h1>
+        <div class="">
+
+        </div>
     </div>
 </div>
 

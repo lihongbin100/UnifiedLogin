@@ -19,6 +19,8 @@ public class TRole {
     @GeneratedValue
     private Integer id;//int(128) NOT NULL AUTO_INCREMENT,
     private String name;//varchar(128) NOT NULL,
+    private Integer agentId;
+    private String sign;
     private String description;//varchar(128) NOT NULL,
     private String createUser;//varchar(128) NOT NULL,
     private Date createTime;//bigint(30) NOT NULL,

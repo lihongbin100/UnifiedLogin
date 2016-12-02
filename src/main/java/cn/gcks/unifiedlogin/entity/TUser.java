@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * Created by lihb on 8/25/16.
@@ -14,7 +15,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "qy_user")
 @Data
-public class TUser implements java.io.Serializable{
+
+public class TUser implements java.io.Serializable {
+
     @Id
     private String userid;//varchar(128) NOT NULL,
     private String name;//varchar(128) NOT NULL,
@@ -27,4 +30,17 @@ public class TUser implements java.io.Serializable{
     private Integer status;//varchar(10) NOT NULL DEFAULT '4' COMMENT '关注状态: 1=已关注，2=已冻结，4=未关注',
     private String corpid;//varchar(128) NOT NULL,
     private Long updatetime;//varchar(128) NOT NULL,
+    private Integer cityId;
+    private Integer provinceId;
+    private String roleName;//在某个应用下的角色  用于前端展示
+
+    public TUser(){
+
+    }
+    public TUser(String userid, String name, String avatar, String roleName) {
+        this.userid = userid;
+        this.name = name;
+        this.avatar = avatar;
+        this.roleName = roleName;
+    }
 }

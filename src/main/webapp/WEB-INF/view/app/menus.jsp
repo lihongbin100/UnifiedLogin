@@ -44,7 +44,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">
-            添加管理员:${agentInfo.name}
+            菜单:${agentInfo.name}
         </h4>
     </div>
     <div class="modal-body">
@@ -66,23 +66,17 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-4 shu">
-                <div class="center">
-                    部门
-                </div>
-                <hr>
-                <div id="departmentTree" class="ztree dp">
+            <div class="col-sm-10 col-sm-offset-1 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading center">
+                        <h3 class="panel-title">菜单</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="departmentTree" class="ztree">
 
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-8 shu">
-                <div class="center">
-                    成员
-                </div>
-                <hr>
-                <ul id="users-list" class="ul list-group">
-
-                </ul>
             </div>
         </div>
     </div>
@@ -98,7 +92,7 @@
 
     var setting = {
         check: {
-            enable: false
+            enable: true
         },
         data: {
             simpleData: {
@@ -110,38 +104,6 @@
                 return true;
             },
             onClick: function (event, treeId, treeNode, clickFlag) {
-                $.get("<%=basePath%>/user/departmentUsers?start=0&departmentId=" + treeNode.id, function (res) {
-                    var userList = "";
-                    if (res.success) {
-                        var data = res.obj;
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].avatar == '') {
-                                data[i].avatar = "<%=basePath%>/img/gckslogo.png";
-                            }
-                            userList = userList + '<li class="list-group-item"><img src="' + data[i].avatar + '" style="height: 20px;width: 20px"> ' + data[i].name + '<input id="input-' + data[i].userid + '" class="check" data-id="' + data[i].userid + '" data-avatar="' + data[i].avatar + '" data-name="' + data[i].name + '" type="checkbox"></li>';
-                        }
-                    }
-                    $("#users-list").html(userList);
-                    $('input').iCheck({
-                        checkboxClass: 'icheckbox_square-green',
-                        radioClass: 'iradio_square-green',
-                        increaseArea: '20%' // optional
-                    });
-                    var userLabel = '<label id="user-{0}" data-id="{0}" class="current-users label label-info"><img src="{1}" style="height: 15px;width: 15px;margin-right: 5px">{2} <i class="glyphicon glyphicon-remove"></i></label>';
-                    $('input').on("ifChecked", function () {
-                        var id = $(this).data("id");
-                        var name = $(this).data("name");
-                        var avatar = $(this).data("avatar");
-                        $("#usersCurrent").append(userLabel.format(id, avatar, name));
-                    });
-                    $('input').on("ifUnchecked", function () {
-                        var id = $(this).data("id");
-                        var name = $(this).data("name");
-                        $("#user-" + id).remove();
-                    });
-
-
-                });
             }
         }
     };
@@ -172,8 +134,8 @@
                     location.reload();
                 }, 1000);
                 $("#Modal").modal("hide");
-            }else {
-                showTip(res.msg,"success");
+            } else {
+                showTip(res.msg, "success");
                 $btn.button('reset');
             }
         });

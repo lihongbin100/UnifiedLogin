@@ -14,8 +14,8 @@
         </div>
     </div>
 </div>
-<div id="footer" class="center">
-    <div> 2013 &copy; Copyright 微学</div>
+<div id="footer" class="center navbar-fixed-bottom">
+    <div> 2016 &copy; Copyright 国创科视</div>
 </div>
 <script src="<%=basePath%>/js/platform.js"></script>
 <script>

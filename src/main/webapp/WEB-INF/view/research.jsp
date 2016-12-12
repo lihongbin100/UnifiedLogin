@@ -7,7 +7,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="common/header.jsp"></jsp:include>
 <!--header-->
 <div id="content">
     <!--breadcrumbs-->
@@ -27,5 +27,5 @@
 <!--content-->
 
 <!--bottom-->
-<jsp:include page="bottom.jsp"></jsp:include>
+<jsp:include page="common/bottom.jsp"></jsp:include>
 <!--bottom-->

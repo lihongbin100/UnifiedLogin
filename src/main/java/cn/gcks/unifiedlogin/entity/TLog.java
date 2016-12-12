@@ -20,5 +20,8 @@ public class TLog {
     private Integer id;
     private String description;
     private String operator;
+    private String userId;
+    private Integer agentId;
+    private String agentName;
     private Date createTime;
 }

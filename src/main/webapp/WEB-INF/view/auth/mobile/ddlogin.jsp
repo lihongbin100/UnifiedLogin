@@ -45,12 +45,13 @@
             width: 120px;
             border-radius: 50%;
             margin-top: 50px;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
             border: solid #CCCCCC 5px;
+            background-color: #F2F2F2;
         }
 
         .login-btn {
-            margin-top: 50px;
+            margin-top: 20px;
         }
 
         .footer {
@@ -68,7 +69,7 @@
     <%--钉钉js--%>
     <script type="text/javascript" src="http://g.alicdn.com/dingding/open-develop/0.8.4/dingtalk.js"></script>
     <script>
-        var userid="";
+        var userid = "";
         dd.config({
             debug: true,
             agentId: '${jsApiConfig.agentId}', // 必填，微应用ID
@@ -86,10 +87,11 @@
 
             dd.biz.user.get({
                 onSuccess: function (info) {
-                    userid=info.emplId;
+                    userid = info.emplId;
                     $("#avatarImg").attr("src", info.avatar);
+                    $("#manager").text(info.nickName);
                     $.ajax({
-                        url: "<%=basePath%>/auth/login/ding/user?userid=" + info.emplId + "&appid=${appid}&lc=${lc}",
+                        url: "<%=basePath%>/auth/login/ding/user?userid=" + info.emplId + "&appid=${agentInfo.id}&lc=${lc}",
                         type: 'get',
                         success: function (data) {
 //                            alert(JSON.stringify(data.success));
@@ -131,22 +133,23 @@
         function confirm() {
             <%--$(".header").html("<%=basePath%>/auth/login/ding/confirm?lc=${lc}&userId="+userid+"&appId=${appid}");--%>
             $.ajax({
-                url: "<%=basePath%>/auth/login/ding/confirm?lc=${lc}&userId="+userid+"&appId=${appid}",
+                url: "<%=basePath%>/auth/login/ding/confirm?lc=${lc}&userId=" + userid + "&appId=${agentInfo.id}",
                 type: 'get',
                 success: function (data) {
-                    var msg=data.msg;
-                    if(data.success){
-                        msg="登陆成功";
+                    var msg = data.msg;
+                    if (data.success) {
+                        msg = "登陆成功";
                     }
                     dd.device.notification.alert({
                         message: msg,
                         title: "提示",//可传空
                         buttonName: "确定",
-                        onSuccess : function() {
+                        onSuccess: function () {
                             //onSuccess将在点击button之后回调
                             /*回调*/
                         },
-                        onFail : function(err) {}
+                        onFail: function (err) {
+                        }
                     });
 
                 }
@@ -158,20 +161,30 @@
 </head>
 <body>
 <div class="header">
-    应用登陆-钉钉登陆
+    <img src="<%=basePath%>/img/logo.png" style="height: 98%">
 </div>
 
-<div class="actor">
-    <img src="" id="avatarImg">
+<div class="actor row">
+    <img src="<%=basePath%>/img/avator.gif" id="avatarImg">
+    <br>
+    <label id="manager"></label>
 </div>
-<button onclick="confirm()" id="auth" class="hidden login-btn btn btn-info btn-lg col-xs-8 col-xs-offset-2">
-    确认登陆
-</button>
+<div class="row">
+    <br>
+    登陆应用：<label class="label label-success">${agentInfo.name}</label>
+    <hr>
+    <button onclick="confirm()" id="auth" class="hidden login-btn btn btn-info btn-lg col-xs-8 col-xs-offset-2">
+        确认登陆
+    </button>
+</div>
 <div class="no-auth hidden" id="noAuth">
     <div class="alert alert-info">
         您没有此应用使用权限
     </div>
     <button class="btn btn-success btn-lg col-xs-8 col-xs-offset-2" onclick="closeHtml()">关闭</button>
+</div>
+<div class="alert alert-info" style="margin: 30px;text-align: left;font-size: 14px">
+    欢迎使用钉钉登陆登陆国创科视应用系统，如有问题请发送邮件到<span style="color: #953b39"> lihb@gcks.cn</span>
 </div>
 <div class="footer navbar-fixed-bottom">
     CopyRight gcks.cn

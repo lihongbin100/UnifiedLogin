@@ -8,11 +8,20 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <style>
     .ztree, .userlist {
         max-height: 600px;
         overflow-y: auto;
+    }
+
+    .dep-div {
+        border: solid #F2F2F2 1px;
+    }
+
+    .user-con {
+        margin-top: 10px;
+        border: solid #F2F2F2 1px;
     }
 </style>
 <!--header-->
@@ -36,20 +45,15 @@
                 </button>
                 <span ng-model="info" ng-bind="info">
                 </span>
-                <hr>
+
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        部门
-                    </div>
-                    <div class="panel-body">
-                        <div id="departmentTree" class="ztree">
-
-                        </div>
-                    </div>
+        <div class="row user-con">
+            <div class="col-sm-3 dep-div">
+                <h4>部门</h4>
+                <hr>
+                <div id="departmentTree" class="ztree">
+                    <img src="<%=basePath%>/img/loading.gif">
                 </div>
             </div>
             <div class="col-sm-9">
@@ -98,7 +102,7 @@
             }
             webSocket = evnt.data;
         };
-        $("#menu li:eq(1)").addClass("active");
+        $("#menu li:eq(2)").addClass("active");
         $('.icheck').iCheck({
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
@@ -170,5 +174,5 @@
 </script>
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

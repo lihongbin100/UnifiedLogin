@@ -8,7 +8,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <!--header-->
 <div class="error-content">
     <div class="error_ex">
@@ -20,4 +20,4 @@
         <a class="btn btn-warning btn-big" href="<%=basePath%>">重新登录</a></div>
 </div>
 <!--Footer-part-->
-<jsp:include page="bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>

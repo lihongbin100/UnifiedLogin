@@ -4,9 +4,12 @@ import cn.gcks.unifiedlogin.entity.TLog;
 import cn.gcks.unifiedlogin.model.Result;
 import cn.gcks.unifiedlogin.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +24,8 @@ public class LogController {
     @Autowired
     LogRepository logRepository;
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String show(HttpServletRequest request) {
-        List<TLog> logs=logRepository.findAll();
+    public String show(HttpServletRequest request, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
+        Page<TLog> logs=logRepository.findAll(new PageRequest(page, size));
         request.setAttribute("logs",logs);
         return "log/show";
     }

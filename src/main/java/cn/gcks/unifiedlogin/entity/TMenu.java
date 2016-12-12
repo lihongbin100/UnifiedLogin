@@ -1,7 +1,9 @@
 package cn.gcks.unifiedlogin.entity;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "menu")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TMenu implements java.io.Serializable{
     @Id
     @GeneratedValue

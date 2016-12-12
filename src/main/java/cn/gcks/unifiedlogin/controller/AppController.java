@@ -39,6 +39,10 @@ public class AppController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, HttpServletRequest request) {
         Page<TAgentInfo> tAgentInfos = agentInfoRepository.findAll(new PageRequest(page, size));
+        for (TAgentInfo agentInfo : tAgentInfos) {
+            TUser user = userRepository.findOne(agentInfo.getSuperManager());
+            agentInfo.setSuperManager(user.getName());
+        }
         request.setAttribute("agentInfos", tAgentInfos);
         return "app/show";
     }
@@ -67,20 +71,28 @@ public class AppController {
     @RequestMapping(value = "/managers", method = RequestMethod.GET)
     public String managers(Integer id, HttpServletRequest request) {
         TAgentInfo agentInfo = agentInfoRepository.findOne(id);
-        List<TUser> users = userRepository.usersHaveRole(id);
+        List<TUserAndAgent> ts = userAndAgentRepository.findByAgentid(id);
+        List<TUser> users = new ArrayList<TUser>();
+        for (TUserAndAgent ta : ts) {
+            TUser tUser = userRepository.findOne(ta.getUserid());
+            TRole tr = userAndRoleRepository.findRoleByByUseridAndAgentid(tUser.getUserid(), id);
+            if (tr != null) {
+                tUser.setRoleName(tr.getName());
+            }
+            users.add(tUser);
+        }
         request.setAttribute("managers", users);
         request.setAttribute("agentInfo", agentInfo);
         return "app/managers";
     }
 
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
-    public String menus(Integer id, HttpServletRequest request) {
+    public String menus(Integer id, String[] managers, HttpServletRequest request) {
         TAgentInfo agentInfo = agentInfoRepository.findOne(id);
         List treeData = commonService.menuList(id);
-        List<TUserAndAgent> ts = userAndAgentRepository.findByAgentid(id);
         List<TUser> users = new ArrayList<TUser>();
-        for (TUserAndAgent ta : ts) {
-            TUser tUser = userRepository.findOne(ta.getUserid());
+        for (String manager : managers) {
+            TUser tUser = userRepository.findOne(manager);
             users.add(tUser);
         }
         request.setAttribute("managers", users);
@@ -107,6 +119,8 @@ public class AppController {
     @RequestMapping(value = "/editPage", method = RequestMethod.GET)
     public String editPage(HttpServletRequest request, Integer appId) {
         TAgentInfo agentInfo = agentInfoRepository.findOne(appId);
+        TUser us=userRepository.findOne(agentInfo.getSuperManager());
+        agentInfo.setSuperManager(us.getName());
         request.setAttribute("agentInfo", agentInfo);
         request.setAttribute("edit", true);
         return "app/add";
@@ -123,6 +137,17 @@ public class AppController {
     public Result saveRole(@RequestParam(value = "users[]") String[] users, Integer agentId, Integer roleId) {
         return commonService.saveRole(users, agentId, roleId);
     }
+
+    @RequestMapping(value = "/saveMenus", method = RequestMethod.POST)
+    @ResponseBody
+    public Result saveMenus(@RequestParam(value = "users[]") String[] users, Integer agentId, @RequestParam(value = "menuId[]") Integer[] menuId) {
+        if (menuId == null || menuId.length == 0) {
+            return new Result(false, "menuId 不能为空");
+        } else {
+            return commonService.saveMenus(users, agentId, menuId);
+        }
+    }
+
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody

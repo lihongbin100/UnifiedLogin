@@ -32,6 +32,7 @@
             height: 50px;
             box-shadow: 2px 2px 2px #888888;
             text-align: left;
+            /*background-color: #ffffff;*/
         }
 
         .header img {
@@ -43,9 +44,9 @@
         .login-div {
             width: 30%;
             height: 50%;
-            background-color: rgba(255,255,255,0.5);
-            box-shadow: 2px 2px 2px 2px #888888;
-            margin: 10% 10% 0px 0px;
+            background-color: rgba(255, 255, 255, 0);
+            /*box-shadow: 2px 2px 2px 2px #888888;*/
+            margin: 10% 15% 0px 0px;
             position: relative;
             float: right;
             display: inline-block;
@@ -55,13 +56,19 @@
         #wxQrcode {
             width: 180px;
             height: 180px;
-            margin: 50px 0px 0px 50px;
+            margin: 50px;
+            border: solid #c8d755 2px;
             float: left;
         }
+
         #ddQrcode {
-            width: 80%;
-            height: auto;
-            margin: 10% auto;
+            width: 360px;
+            height: 360px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 70px;
+            border: solid #c8d755 10px;
+            border-radius: 50%;
+            margin: 10%;
         }
 
         table td {
@@ -104,8 +111,8 @@
                     render: "canvas",//设置渲染方式
                     width: 200,     //设置宽度
                     height: 200,     //设置高度
-                    background: "#ffffff",//背景颜色
-                    foreground: "#00BCD4",
+                    background: "#80acb0",//背景颜色
+                    foreground: "#000000",
                     text: '<%=basePath%>/auth/login/ding?appId=${appid}&lc=' + evnt.data
                 });
             };
@@ -174,11 +181,11 @@
     <div class="login-div row">
         <c:if test="${register}">
             <%--<div id="wxQrcode">--%>
-                <%--<div class="progress">--%>
-                    <%--<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"--%>
-                         <%--aria-valuemin="0" aria-valuemax="100" style="width: 100%">--%>
-                    <%--</div>--%>
-                <%--</div>--%>
+            <%--<div class="progress">--%>
+            <%--<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"--%>
+            <%--aria-valuemin="0" aria-valuemax="100" style="width: 100%">--%>
+            <%--</div>--%>
+            <%--</div>--%>
             <%--</div>--%>
 
             <div id="ddQrcode">
@@ -190,7 +197,7 @@
             </div>
             <div class="clearfix"></div>
             <%--<div class="label label-success" style="float: left;margin: 30px 0px 0px 100px;">微信扫码登陆</div>--%>
-            <div class="label label-info" style="margin-top: 5%;display: inline-block">钉钉扫码登陆</div>
+            <%--<div class="label label-info" style="margin-top: 5%;display: inline-block">钉钉扫码登陆</div>--%>
         </c:if>
         <c:if test="${!register}">
 

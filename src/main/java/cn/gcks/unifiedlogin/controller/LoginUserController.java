@@ -4,6 +4,7 @@ import cn.gcks.unifiedlogin.entity.TUser;
 import cn.gcks.unifiedlogin.entity.TUserAndMenu;
 import cn.gcks.unifiedlogin.model.LoginUser;
 import cn.gcks.unifiedlogin.model.SessionInfo;
+import cn.gcks.unifiedlogin.repository.MenuRepository;
 import cn.gcks.unifiedlogin.repository.UserAndMenuRepository;
 import cn.gcks.unifiedlogin.repository.UserRepository;
 import cn.gcks.unifiedlogin.service.LoginCodeService;
@@ -33,6 +34,8 @@ public class LoginUserController {
     UserAndMenuRepository userAndMenuRepository;
     @Value("${unifiedlogin.appid}")
     int appId;
+    @Autowired
+    MenuRepository menuRepository;
 
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -42,10 +45,11 @@ public class LoginUserController {
         } else {
             List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), appId);
             LoginUser loginUser = new LoginUser();
-            loginUser.setUser(new TUser(user.getUserId(),user.getName(),user.getAvatar(),"0"));
+            loginUser.setUser(new TUser(user.getUserId(), user.getName(), user.getAvatar(), "0"));
             String[] menus = new String[tUserAndMenus.size()];
             for (int i = 0; i < tUserAndMenus.size(); i++) {
-                menus[i] = tUserAndMenus.get(i).getMenusign();
+                Integer menuId = tUserAndMenus.get(i).getMenuid();
+                menus[i] = menuRepository.findOne(menuId).getSign();
             }
             loginUser.setMenus(menus);
             SessionInfo sessionInfo = new SessionInfo();

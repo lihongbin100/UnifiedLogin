@@ -7,13 +7,26 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <style>
-    .treegrid-parent-0{
+    .treegrid-parent-0 {
         background-color: #aad1ee;
     }
-    .treegrid-indent {width:16px; height: 16px; display: inline-block; position: relative;}
-    .treegrid-expander {width:16px; height: 16px; display: inline-block; position: relative; cursor: pointer;}
+
+    .treegrid-indent {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        position: relative;
+    }
+
+    .treegrid-expander {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+    }
 </style>
 <!--header-->
 
@@ -23,22 +36,24 @@
     <!--Action boxes-->
     <div class="container-fluid">
         <div class="btn-group">
-            <button class="btn btn-info">
-                选择应用：
-            </button>
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span id="selectBtn">${agentInfo.name}</span>
-                    <span class="caret"></span>
+            <c:if test="${userinfo.loginUser.role.sign =='superman'}">
+                <button class="btn btn-info">
+                    选择应用：
                 </button>
-                <ul class="dropdown-menu" role="menu">
-                    <c:forEach items="${apps}" var="app" varStatus="s">
-                        <li>
-                            <a href="<%=basePath%>/menu?appId=${app.id}">${app.name}</a>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span id="selectBtn">${agentInfo.name}</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <c:forEach items="${apps}" var="app" varStatus="s">
+                            <li>
+                                <a href="<%=basePath%>/menu?appId=${app.id}">${app.name}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:if>
             <button type="button" class="btn btn-default" onclick="addMenu(0)">
                 <i class="glyphicon glyphicon-plus"></i> 新增菜单
             </button>
@@ -65,10 +80,10 @@
                     <c:forEach items="${menus}" var="menu" varStatus="s">
                         <tr class="treegrid-${menu.id} treegrid-parent-${menu.parent}">
                             <td>
-                               <%--<span class="badge bg-info">${menu.parent}</span>--%>
+                                    <%--<span class="badge bg-info">${menu.parent}</span>--%>
                             </td>
                             <td>
-                                  <span class="badge">  ${menu.id}</span>
+                                <span class="badge"> ${menu.id}</span>
                             </td>
                             <td>
                                     ${menu.name}
@@ -92,7 +107,8 @@
                                     </div>
                                 </div>
                                 <button data-id="${menu.id}" data-loading-text="删除中..."
-                                        data-toggle="tooltip" data-placement="right" title="递归删除菜单下所有子菜单" class="tool delete btn btn-xs btn-danger">删除
+                                        data-toggle="tooltip" data-placement="right" title="递归删除菜单下所有子菜单"
+                                        class="tool delete btn btn-xs btn-danger">删除
                                 </button>
                             </td>
                         </tr>
@@ -118,7 +134,7 @@
     }
 
     $(function () {
-        $("#menu li:eq(3)").addClass(" alert-success");
+        $("#menu li:eq(4)").addClass(" alert-success");
         // treegrid刷新
 
         $('.tree').treegrid(
@@ -147,5 +163,5 @@
 <!-- Modal -->
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

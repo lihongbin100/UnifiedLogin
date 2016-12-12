@@ -7,7 +7,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <!--header-->
 
 <!--content-->
@@ -26,49 +26,55 @@
                         <th>序号ID</th>
                         <th>时间</th>
                         <th>描述</th>
+                        <th>应用</th>
                         <th>操作员</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${logs}" var="log" varStatus="s">
+                    <c:forEach items="${logs.content}" var="log" varStatus="s">
                         <tr>
                             <td>${log.id}</td>
                             <td>
-                                ${log.createTime}
+                                    ${log.createTime}
                             </td>
                             <td>
-                                ${log.description}
+                                    ${log.description}
                             </td>
                             <td>
-                                ${log.operator}
+                                    ${log.agentName}
+                            </td>
+                            <td>
+                                    ${log.operator}
                             </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
-                <c:if test="${empty logs}">
+                <c:if test="${empty logs.content}">
                     <div class="no-content">无内容</div>
                 </c:if>
             </div>
-            <div class="page">
-                <div class="right">
-                    <c:if test="${prepage>0}">
-                        <button onclick="javascript:window.location.href='<%=basePath%>/platform/project?startPage=${prepage}'"
-                                id="btn-pre" class="btn btn-mini">上一页
+            <c:if test="${!empty logs.content}">
+                <div class="page">
+                    <div class="right">
+                        <c:if test="${logs.number>0}">
+                            <button onclick="javascript:window.location.href='<%=basePath%>/log?page=${logs.number-1}'"
+                                    id="btn-pre" class="btn btn-mini">上一页
+                            </button>
+                        </c:if>
+                        <button onclick="javascript:window.location.href='<%=basePath%>/log?page=${logs.number+1}'"
+                                id="btn-next" class="btn btn-mini btn-inverse">下一页
                         </button>
-                    </c:if>
-                    <button onclick="javascript:window.location.href='<%=basePath%>/platform/project?startPage=${nextpage}'"
-                            id="btn-next" class="btn btn-mini btn-inverse">下一页
-                    </button>
+                    </div>
                 </div>
-            </div>
+            </c:if>
             <div class="clear"></div>
         </div>
     </div>
 </div>
 <script>
     $(function () {
-        $("#menu li:eq(4)").addClass("active");
+        $("#menu li:eq(5)").addClass("active");
         $(".delete").click(function () {
             var deleteBtn = $(this);
             var $btn = deleteBtn.button('loading');
@@ -87,5 +93,5 @@
 <!-- Modal -->
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

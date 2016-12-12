@@ -7,7 +7,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <!--header-->
 
 <!--content-->
@@ -16,22 +16,24 @@
     <div class="container-fluid">
         <div>
             <div class="btn-group">
-                <button class="btn btn-info">
-                    选择应用：
-                </button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span id="selectBtn">${agentInfo.name}</span>
-                        <span class="caret"></span>
+                <c:if test="${userinfo.loginUser.role.sign =='superman'}">
+                    <button class="btn btn-info">
+                        选择应用：
                     </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <c:forEach items="${apps}" var="app" varStatus="s">
-                            <li>
-                                <a href="<%=basePath%>/role?appId=${app.id}">${app.name}</a>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span id="selectBtn">${agentInfo.name}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <c:forEach items="${apps}" var="app" varStatus="s">
+                                <li>
+                                    <a href="<%=basePath%>/role?appId=${app.id}">${app.name}</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </c:if>
                 <button type="button" class="btn btn-default" href="<%=basePath%>/role/addPage?agentId=${agentInfo.id}"
                         data-toggle="modal" data-target="#Modal">
                     <i class="glyphicon glyphicon-plus"></i> 新增角色
@@ -64,6 +66,10 @@
                                      data-title="简介：${role.description}">${role.name}</div>
                             </td>
                             <td>
+                                <button class="btn btn-xs btn-success"
+                                        href="<%=basePath%>/role/setMenus?agentId=${agentInfo.id}&roleId=${role.id}"
+                                        data-toggle="modal" data-target="#Modal${role.id}">设置菜单
+                                </button>
                                 <button class="btn btn-xs btn-primary"
                                         href="<%=basePath%>/role/editPage?id=${role.id}"
                                         data-toggle="modal" data-target="#Modal${role.id}">编辑
@@ -103,7 +109,7 @@
 </div>
 <script>
     $(function () {
-        $("#menu li:eq(2)").addClass("active");
+        $("#menu li:eq(3)").addClass("active");
         $(".delete").click(function () {
             var deleteBtn = $(this);
             var $btn = deleteBtn.button('loading');
@@ -124,5 +130,5 @@
 <!-- Modal -->
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

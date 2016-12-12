@@ -1,16 +1,17 @@
 package cn.gcks.unifiedlogin.controller;
 
-import cn.gcks.unifiedlogin.dingding.api.DDConfigApi;
-import cn.gcks.unifiedlogin.dingding.model.DDUser;
 import cn.gcks.unifiedlogin.dingding.model.JsApiConfig;
-import cn.gcks.unifiedlogin.dingding.utils.SignMethod;
 import cn.gcks.unifiedlogin.entity.*;
 import cn.gcks.unifiedlogin.model.LoginUser;
 import cn.gcks.unifiedlogin.model.Result;
+import cn.gcks.unifiedlogin.model.SessionInfo;
 import cn.gcks.unifiedlogin.repository.*;
+import cn.gcks.unifiedlogin.service.CommonService;
 import cn.gcks.unifiedlogin.service.DDAPI;
 import cn.gcks.unifiedlogin.service.LoginCodeService;
 import cn.gcks.unifiedlogin.service.QyAPI;
+import cn.gcks.unifiedlogin.utils.BaseMethod;
+import cn.gcks.unifiedlogin.utils.Constants;
 import com.foxinmy.weixin4j.exception.WeixinException;
 import com.foxinmy.weixin4j.qy.message.NotifyMessage;
 import com.foxinmy.weixin4j.qy.model.IdParameter;
@@ -28,6 +29,8 @@ import org.springframework.web.socket.TextMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -60,16 +63,24 @@ public class AuthController {
     private UserAndRoleRepository userAndRoleRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private MenuRepository menuRepository;
+    @Autowired
+    private RoleAndMenuRepository roleAndMenuRepository;
 
-
+    @Autowired
+    private CommonService commonService;
     @Value("${wx.auth_redirect_url}")
-    String wxAuthRedirectUrl;
+    private String wxAuthRedirectUrl;
     @Value("${app.id}")
-    String wxAppId;
+    private String wxAppId;
     @Value("${dd.auth_redirect_url}")
-    String ddAuthRedirectUrl;
+    private String ddAuthRedirectUrl;
     @Value("${dd.appid}")
-    String ddAppId;
+    private String ddAppId;
+    @Value("${unifiedlogin.appid}")
+    private Integer unifiedLoginAppId;
+
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Integer appId, HttpServletRequest request) {
@@ -120,6 +131,17 @@ public class AuthController {
         return "redirect:" + String.format(wxAuthRedirectUrl, wxAppId, URLEncoder.encode(basePath + "/auth/login/mobile/code?lc=" + request.getAttribute("lc") + "&appid=" + request.getAttribute("appid"), "UTF-8"), "app1");
     }
 
+    /**
+     * 企业号使用
+     *
+     * @param lc
+     * @param appid
+     * @param code
+     * @param request
+     * @param response
+     * @return
+     * @throws WeixinException
+     */
     @RequestMapping(value = "/login/mobile/code", method = RequestMethod.GET)
     public String mobileCode(String lc, Integer appid, String code, HttpServletRequest request, HttpServletResponse response) throws WeixinException {
         if (code != null && !"".equals(code)) {
@@ -165,6 +187,7 @@ public class AuthController {
             String queryString = request.getQueryString();
             String queryStringEncode = null;
             String url;
+            TAgentInfo agentInfo = agentInfoRepository.findOne(appId);
             if (queryString != null) {
                 queryStringEncode = URLDecoder.decode(queryString);
                 url = urlString + "?" + queryStringEncode;
@@ -174,14 +197,24 @@ public class AuthController {
             JsApiConfig js = ddapi.jsApiConfig(url);
             request.setAttribute("jsApiConfig", js);
             request.setAttribute("lc", lc);
-            request.setAttribute("appid", appId);
+            request.setAttribute("agentInfo", agentInfo);
             request.setAttribute("url", url);
+            loginWebSocketHandler.sendMessageToUser(new TextMessage("scan:success"), lc);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         return "auth/mobile/ddlogin";
     }
 
+    /**
+     * 企业号登陆 暂时不用
+     *
+     * @param lc
+     * @param userId
+     * @param appId
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/login/mobile/confirm", method = RequestMethod.GET)
     @ResponseBody
     public Result mobileConfirm(String lc, String userId, int appId, HttpServletRequest request) {
@@ -264,6 +297,12 @@ public class AuthController {
         return result;
     }
 
+    /**
+     * 使用手机号验证用户是否有权限
+     *
+     * @param tel
+     * @return
+     */
     @RequestMapping(value = "/userCheck", method = RequestMethod.GET)
     @ResponseBody
     public Result userCheck(String tel) {
@@ -299,22 +338,80 @@ public class AuthController {
             result.setSuccess(false);
             result.setMsg("CODE不存在或者已过期");
         } else {
-            List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), appId);
             LoginUser loginUser = new LoginUser();
-            loginUser.setUser(new TUser(user.getUserId(),user.getName(),user.getAvatar(),"0"));
-            String[] menus = new String[tUserAndMenus.size()];
-            for (int i = 0; i < tUserAndMenus.size(); i++) {
-                menus[i] = tUserAndMenus.get(i).getMenusign();
-            }
+            loginUser.setUser(new TUser(user.getUserId(), user.getName(), user.getAvatar(), "0"));
+
             TUserAndRole tUserAndRole = userAndRoleRepository.findByUseridAndAgentid(user.getUserId(), appId);
             if (tUserAndRole != null) {
                 TRole tr = roleRepository.findOne(tUserAndRole.getRoleid());
                 loginUser.setRole(tr);
+                if (tr != null && tr.getId() != null) {
+                    List<TMenu> tMenus = roleAndMenuRepository.findMenusByRoleidAndAgentid(tr.getId(), appId);
+                    String[] menus = new String[tMenus.size()];
+                    for (int i = 0; i < tMenus.size(); i++) {
+                        menus[i] = tMenus.get(i).getSign();
+                    }
+                    loginUser.setMenus(menus);
+                }
             }
-            loginUser.setMenus(menus);
+
+            List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), appId);
+            String[] menus = new String[tUserAndMenus.size()];
+            for (int i = 0; i < tUserAndMenus.size(); i++) {
+                Integer menuId = tUserAndMenus.get(i).getMenuid();
+                menus[i] = menuRepository.findOne(menuId).getSign();
+            }
+            if (tUserAndMenus != null && tUserAndMenus.size() != 0) {
+                loginUser.setMenus(menus);
+            }
             result.setSuccess(true);
             result.setObj(loginUser);
         }
+        if (result.isSuccess()) {
+            commonService.loginLog(user.getUserId(), "登陆", appId);
+        } else {
+            commonService.loginLog("", "登陆失败：user为空" + result.getMsg(), appId);
+        }
         return result;
+    }
+
+
+    /**
+     * 登陆本系统
+     *
+     * @param code
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/loginThis", method = RequestMethod.GET)
+    public String loginThis(String code, HttpServletRequest request) {
+        User user = loginCodeService.getUser(code + unifiedLoginAppId);
+        if (user == null) {
+        } else {
+            List<TUserAndMenu> tUserAndMenus = userAndMenuRepository.findByUseridAndAgentid(user.getUserId(), unifiedLoginAppId);
+            LoginUser loginUser = new LoginUser();
+            loginUser.setUser(new TUser(user.getUserId(), user.getName(), user.getAvatar(), "0"));
+            String[] menus = new String[tUserAndMenus.size()];
+            for (int i = 0; i < tUserAndMenus.size(); i++) {
+                Integer menuId = tUserAndMenus.get(i).getMenuid();
+                menus[i] = menuRepository.findOne(menuId).getSign();
+            }
+            TRole role = userAndRoleRepository.findRoleByByUseridAndAgentid(user.getUserId(), unifiedLoginAppId);
+            loginUser.setMenus(menus);
+            loginUser.setRole(role);
+            SessionInfo sessionInfo = new SessionInfo();
+            sessionInfo.setId(user.getUserId());
+            sessionInfo.setLoginUser(loginUser);
+            request.getSession().setAttribute(Constants.Config.SESSION_USER_NAME, sessionInfo);
+            commonService.loginLog(user.getUserId(), "登陆", unifiedLoginAppId);
+        }
+        return "redirect:/";
+
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String login(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
+        session.removeAttribute(Constants.Config.SESSION_USER_NAME);
+        return "redirect:/";
     }
 }

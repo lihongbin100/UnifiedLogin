@@ -8,16 +8,16 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <!--header-->
 <div class="error-content">
     <div class="error_ex">
-        <h1>404</h1>
+        <h1>405</h1>
 
-        <h3>Opps, You're lost.</h3>
+        <h3>Something is wrong here. Method not allowed!</h3>
 
-        <p>We can not find the page you're looking for.</p>
+        <p>Access to this page is forbidden</p>
         <a class="btn btn-warning btn-big" href="<%=basePath%>">Back to Home</a></div>
-
 </div>
-<jsp:include page="bottom.jsp"></jsp:include>
+<!--Footer-part-->
+<jsp:include page="../common/bottom.jsp"></jsp:include>

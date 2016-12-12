@@ -7,7 +7,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <style>
 
     label {
@@ -30,9 +30,11 @@
     <!--Action boxes-->
     <div class="container-fluid">
         <div class="col-sm-2 list-group">
-            <a href="<%=basePath%>/app" class="list-group-item">
-                应用列表
-            </a>
+            <c:if test="${userinfo.loginUser.role.sign =='superman'}">
+                <a href="<%=basePath%>/app" class="list-group-item">
+                    应用列表
+                </a>
+            </c:if>
             <a href="<%=basePath%>/app/managers" class="list-group-item active">
                 管理员权限
             </a>
@@ -43,8 +45,7 @@
                         data-toggle="modal" data-target="#Modal">
                     <i class="glyphicon glyphicon-user"></i> 编辑管理员
                 </button>
-                <button type="button" class="btn btn-info" href="<%=basePath%>/app/menus?id=${agentInfo.id}"
-                        data-toggle="modal" data-target="#Modal">
+                <button type="button" class="btn btn-info" onclick="setMenus()">
                     <i class="glyphicon glyphicon-edit"></i> 编辑权限
                 </button>
                 <button type="button" class="btn btn-danger" onclick="setRole()">
@@ -83,10 +84,10 @@
                                         <img src="<%=basePath%>/img/gckslogo.png"
                                              style="height: 20px;width: 20px;margin-right: 5px">
                                     </c:if>
-                                    <label id="user-${manager.userid}" data-id="${manager.userid}"
-                                           class="current-users">
+                                    <span id="user-${manager.userid}" data-id="${manager.userid}"
+                                          class="current-users">
                                             ${manager.name}
-                                    </label>
+                                    </span>
                                 </td>
                                 <td>
                                         ${manager.roleName}
@@ -130,12 +131,23 @@
 
     });
 
-    $("#allCheck").on("ifChecked",function () {
+    $("#allCheck").on("ifChecked", function () {
         $('input.check').iCheck("check");
     })
-    $("#allCheck").on("ifUnchecked",function () {
+    $("#allCheck").on("ifUnchecked", function () {
         $('input.check').iCheck("uncheck");
     })
+
+    function setMenus() {
+        var managers = "";
+        $('input:checked.check').each(function () {
+            var id = $(this).data('id');
+            managers = managers + "&managers=" + id;
+        });
+        $("#Modal").modal({
+            remote: "<%=basePath%>/app/menus?id=${agentInfo.id}" + managers
+        });
+    }
 
     function setRole() {
         var managers = "";
@@ -153,5 +165,5 @@
 <!-- Modal -->
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

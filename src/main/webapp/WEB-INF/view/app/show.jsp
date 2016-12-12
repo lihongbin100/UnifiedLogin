@@ -7,7 +7,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
 %>
 <!--header-->
-<jsp:include page="../header.jsp"></jsp:include>
+<jsp:include page="../common/header.jsp"></jsp:include>
 <!--header-->
 
 <!--content-->
@@ -15,9 +15,11 @@
     <!--Action boxes-->
     <div class="container-fluid">
         <div class="col-sm-1 list-group">
-            <a href="<%=basePath%>/app" class="list-group-item active">
-                应用列表
-            </a>
+            <c:if test="${userinfo.loginUser.role.sign =='superman'}">
+                <a href="<%=basePath%>/app" class="list-group-item active">
+                    应用列表
+                </a>
+            </c:if>
             <a href="#" class="list-group-item">
                 管理员权限
             </a>
@@ -115,7 +117,7 @@
 </div>
 <script>
     $(function () {
-        $("#menu li:eq(0)").addClass("active");
+        $("#menu li:eq(1)").addClass("active");
         $(".delete").click(function () {
             var deleteBtn = $(this);
             var $btn = deleteBtn.button('loading');
@@ -134,5 +136,5 @@
 <!-- Modal -->
 
 <!--bottom-->
-<jsp:include page="../bottom.jsp"></jsp:include>
+<jsp:include page="../common/bottom.jsp"></jsp:include>
 <!--bottom-->

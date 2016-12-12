@@ -118,7 +118,11 @@
                             if (data[i].avatar == '') {
                                 data[i].avatar = "<%=basePath%>/img/gckslogo.png";
                             }
-                            userList = userList + '<li class="list-group-item"><img src="' + data[i].avatar + '" style="height: 20px;width: 20px"> ' + data[i].name + '<input id="input-' + data[i].userid + '" class="check" data-id="' + data[i].userid + '" data-avatar="' + data[i].avatar + '" data-name="' + data[i].name + '" type="checkbox"></li>';
+                            if ($("body").find("#user-" + data[i].userid).length == 1) {
+                                userList = userList + '<li class="list-group-item"><img src="' + data[i].avatar + '" style="height: 20px;width: 20px"> ' + data[i].name + '<input id="input-' + data[i].userid + '" class="check" data-id="' + data[i].userid + '" data-avatar="' + data[i].avatar + '" data-name="' + data[i].name + '" checked type="checkbox"></li>';
+                            } else {
+                                userList = userList + '<li class="list-group-item"><img src="' + data[i].avatar + '" style="height: 20px;width: 20px"> ' + data[i].name + '<input id="input-' + data[i].userid + '" class="check" data-id="' + data[i].userid + '" data-avatar="' + data[i].avatar + '" data-name="' + data[i].name + '" type="checkbox"></li>';
+                            }
                         }
                     }
                     $("#users-list").html(userList);
@@ -137,7 +141,13 @@
                     $('input').on("ifUnchecked", function () {
                         var id = $(this).data("id");
                         var name = $(this).data("name");
-                        $("#user-" + id).remove();
+                        var _element = document.getElementById("user-" + id);
+                        if (_element != null) {
+                            var _parentElement = _element.parentNode;
+                            if (_parentElement) {
+                                _parentElement.removeChild(_element);
+                            }
+                        }
                     });
 
 
@@ -150,8 +160,8 @@
 
     $("#usersCurrent").on("click", "label", function () {
         var id = $(this).data("id");
+        $("#input-" + id).removeAttr("checked");
         $(this).remove();
-        $("#input-" + id).iCheck('uncheck');
     })
 
     $("#save").click(function () {
@@ -172,8 +182,8 @@
                     location.reload();
                 }, 1000);
                 $("#Modal").modal("hide");
-            }else {
-                showTip(res.msg,"success");
+            } else {
+                showTip(res.msg, "success");
                 $btn.button('reset');
             }
         });

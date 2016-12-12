@@ -64,6 +64,8 @@
             <div class="col-sm-7">
                 <div class="input-group">
                     <input type="text" class="form-control" value="${agentInfo.superManager}" required id="userSearch"
+                                                          name="superManagerName">
+                    <input type="text" class="form-control hidden" value="${agentInfo.superManager}"  id="userSearchId"
                            name="superManager">
                     <span class="input-group-btn">
                     <button class="btn btn-default" type="button">
@@ -103,8 +105,14 @@
                 $.get('<%=basePath%>/user/users', parameter, function (data) {
                     process(data.obj);
                 });
+            },
+            updater:function (item) {
+                $("#userSearchId").val(item.userid);
+                return item.name;
             }
+
         });
+
 
         $("#addAppForm").validate({
             submitHandler: function (form) {

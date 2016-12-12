@@ -13,12 +13,12 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "user_menu")
+@Table(name = "role_menu")
 @Data
-@IdClass(TUserAndMenu.class)
-public class TUserAndMenu implements java.io.Serializable {
+@IdClass(TRoleAndMenu.class)
+public class TRoleAndMenu implements java.io.Serializable {
     @Id
-    private String userid;
+    private Integer roleid;
     @Id
     private Integer menuid;
     @Id

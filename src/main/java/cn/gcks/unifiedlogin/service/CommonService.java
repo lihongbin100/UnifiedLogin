@@ -1,20 +1,20 @@
 package cn.gcks.unifiedlogin.service;
 
-import cn.gcks.unifiedlogin.entity.TDepartment;
-import cn.gcks.unifiedlogin.entity.TMenu;
-import cn.gcks.unifiedlogin.entity.TUserAndAgent;
-import cn.gcks.unifiedlogin.entity.TUserAndRole;
+import cn.gcks.unifiedlogin.entity.*;
 import cn.gcks.unifiedlogin.model.Result;
-import cn.gcks.unifiedlogin.repository.DepartmentRepository;
-import cn.gcks.unifiedlogin.repository.MenuRepository;
-import cn.gcks.unifiedlogin.repository.UserAndAgentRepository;
-import cn.gcks.unifiedlogin.repository.UserAndRoleRepository;
+import cn.gcks.unifiedlogin.repository.*;
 import com.alibaba.fastjson.JSONObject;
+import com.foxinmy.weixin4j.qy.model.AgentInfo;
+import com.mysql.jdbc.log.Log;
+import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,6 +30,16 @@ public class CommonService {
     private UserAndAgentRepository userAndAgentRepository;
     @Autowired
     private MenuRepository menuRepository;
+    @Autowired
+    private UserAndMenuRepository userAndMenuRepository;
+    @Autowired
+    private LogRepository logRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AgentInfoRepository agentInfoRepository;
+    @Autowired
+    RoleAndMenuRepository roleAndMenuRepository;
 
     public List depList() {
         List<TDepartment> departments = departmentRepository.findAll();
@@ -60,6 +70,27 @@ public class CommonService {
             jsonObject.put("pId", menu.getParent());
             jsonArray.add(jsonObject);
         }
+        return jsonArray;
+    }
+
+    public List menuListByRole(Integer agentId, Integer roleId) {
+        List<TMenu> menus = menuRepository.findByAgentIdOrderByParentAsc(agentId);
+        List jsonArray = new ArrayList<JSONObject>();
+        List<TRoleAndMenu> roleAndMenus = roleAndMenuRepository.findByRoleidAndAgentid(roleId, agentId);
+        for (TMenu menu : menus) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", menu.getId());
+            jsonObject.put("name", menu.getName());
+            jsonObject.put("open", true);
+            jsonObject.put("pId", menu.getParent());
+            for (TRoleAndMenu rm : roleAndMenus) {
+                if(rm.getMenuid()==menu.getId()){
+                    jsonObject.put("checked", true);
+                }
+            }
+            jsonArray.add(jsonObject);
+        }
+
         return jsonArray;
     }
 
@@ -96,5 +127,33 @@ public class CommonService {
             userAndRoleRepository.saveAndFlush(userAndRole);
         }
         return new Result(true, "");
+    }
+
+    @Transactional
+    public Result saveMenus(String[] users, Integer agentId, Integer[] menus) {
+        for (String userId : users) {
+            for (Integer menuId : menus) {
+                TUserAndMenu userAndMenu = new TUserAndMenu();
+                userAndMenu.setAgentid(agentId);
+                userAndMenu.setUserid(userId);
+                userAndMenu.setMenuid(menuId);
+                userAndMenuRepository.save(userAndMenu);
+            }
+        }
+        return new Result(true, "");
+    }
+
+    @Synchronized
+    public void loginLog(String userId, String desc, Integer agentId) {
+        TLog log = new TLog();
+        TUser tuser = userRepository.findOne(userId);
+        log.setOperator(tuser.getName());
+        log.setUserId(userId);
+        log.setCreateTime(new Date());
+        log.setDescription(desc);
+        log.setAgentId(agentId);
+        TAgentInfo agentInfo = agentInfoRepository.findOne(agentId);
+        log.setAgentName(agentInfo.getName());
+        logRepository.save(log);
     }
 }

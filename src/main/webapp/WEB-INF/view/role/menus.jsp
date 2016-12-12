@@ -44,26 +44,10 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">
-            菜单:${agentInfo.name}
+            ${role.name}的菜单:
         </h4>
     </div>
     <div class="modal-body">
-        <div class="row">
-            <div class="form-group">
-                <label class="col-sm-2 control-label">管理员 :</label>
-                <div class="col-sm-9" id="usersCurrent">
-                    <c:forEach items="${managers}" var="manager">
-                        <label id="user-${manager.userid}" data-id="${manager.userid}"
-                               class="current-users label label-info">
-                            <img src="${manager.avatar}"
-                                 style="height: 15px;width: 15px;margin-right: 5px">
-                                ${manager.name}
-                        </label>
-                    </c:forEach>
-                </div>
-            </div>
-        </div>
-        <hr>
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1 ">
                 <div class="panel panel-default">
@@ -71,7 +55,7 @@
                         <h3 class="panel-title">菜单</h3>
                     </div>
                     <div class="panel-body">
-                        <div id="departmentTree" class="ztree">
+                        <div id="menusTree" class="ztree">
 
                         </div>
                     </div>
@@ -107,7 +91,7 @@
         }
     };
 
-    var treeObj = $.fn.zTree.init($("#departmentTree"), setting, ${treeData});
+    var treeObj = $.fn.zTree.init($("#menusTree"), setting, ${treeData});
 
 
     $("#save").click(function () {
@@ -125,11 +109,11 @@
         }
 
         console.log(menus);
-        var url = "<%=basePath%>/app/saveMenus";
+        var url = "<%=basePath%>/role/saveMenus";
         var data = {
-            users: users,
-            agentId:${agentInfo.id},
-            menuId:menus
+            roleid: ${role.id},
+            agentid:${agentId},
+            menuIds:menus
         };
         $.post(url, data, function (res) {
             if (res.success) {

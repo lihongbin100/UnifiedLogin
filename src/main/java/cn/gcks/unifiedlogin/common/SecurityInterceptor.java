@@ -49,22 +49,22 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		String requestUri = request.getRequestURI();
 		SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute(Constants.Config.SESSION_USER_NAME);
 		if (sessionInfo == null || "".equalsIgnoreCase(sessionInfo.getId())) {// 如果没有登录或登录超时
-			sessionInfo=new SessionInfo();
-			LoginUser loginUser=new LoginUser();
-			TUser user=new TUser("045946292926696443","李鸿斌","http://static.dingtalk.com/media/lADOKP1Yjc0C7s0C7g_750_750.jpg","管理员");
-			sessionInfo.setId("045946292926696443");
-			TRole role=new TRole();
-			role.setSign("superman");
-			loginUser.setUser(user);
-			loginUser.setRole(role);
-			loginUser.setMenus(new String[]{"yygl","jsgl","cdgl","yhgl","rzgl"});
-			sessionInfo.setLoginUser(loginUser);
-			request.getSession().setAttribute(Constants.Config.SESSION_USER_NAME,sessionInfo);
-			request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
+//			sessionInfo=new SessionInfo();
+//			LoginUser loginUser=new LoginUser();
+//			TUser user=new TUser("045946292926696443","李鸿斌","http://static.dingtalk.com/media/lADOKP1Yjc0C7s0C7g_750_750.jpg","管理员");
+//			sessionInfo.setId("045946292926696443");
+//			TRole role=new TRole();
+//			role.setSign("superman");
+//			loginUser.setUser(user);
+//			loginUser.setRole(role);
+//			loginUser.setMenus(new String[]{"yygl","jsgl","cdgl","yhgl","rzgl"});
+//			sessionInfo.setLoginUser(loginUser);
+//			request.getSession().setAttribute(Constants.Config.SESSION_USER_NAME,sessionInfo);
+//			request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
 			if( (RequestMethod.GET).equals(request.getMethod())){
 				request.setAttribute("handlerUrl",requestUri);
 			}
-//			response.sendRedirect(basePath+"/auth/login?appId="+unifiedLoginAppId);
+			response.sendRedirect(basePath+"/auth/login?appId="+unifiedLoginAppId);
 //			response.sendRedirect("https://qy.weixin.qq.com/cgi-bin/loginpage?corp_id=wxf54e1b5e0b62fa96&redirect_uri=http%3A%2F%2Fwww.wexue.top:8081%2Fauth%2Flogin&usertype=all");
 			return false;
 		}

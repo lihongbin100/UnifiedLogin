@@ -331,7 +331,8 @@ public class AuthController {
      */
     @RequestMapping(value = "/user/code", method = RequestMethod.GET)
     @ResponseBody
-    public Result loginCode(String code, Integer appId) {
+    public Result loginCode(String code, Integer appId, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         User user = loginCodeService.getUser(code + appId);
         Result result = new Result();
         if (user == null) {

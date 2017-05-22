@@ -84,7 +84,7 @@ public class CommonService {
             jsonObject.put("open", true);
             jsonObject.put("pId", menu.getParent());
             for (TRoleAndMenu rm : roleAndMenus) {
-                if(rm.getMenuid()==menu.getId()){
+                if (rm.getMenuid() == menu.getId()) {
                     jsonObject.put("checked", true);
                 }
             }
@@ -146,9 +146,11 @@ public class CommonService {
     @Synchronized
     public void loginLog(String userId, String desc, Integer agentId) {
         TLog log = new TLog();
-        TUser tuser = userRepository.findOne(userId);
-        log.setOperator(tuser.getName());
-        log.setUserId(userId);
+        if (!"".equals(userId)) {
+            TUser tuser = userRepository.findOne(userId);
+            log.setOperator(tuser.getName());
+            log.setUserId(userId);
+        }
         log.setCreateTime(new Date());
         log.setDescription(desc);
         log.setAgentId(agentId);
